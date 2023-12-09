@@ -1,0 +1,133 @@
+@media (min-width: 992px) {
+  .navbar .dropdown-menu {
+    display: none;
+  }
+  .navbar .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+.flexigrid div.form-div input[type=text] {
+  height: 2.5rem;
+}
+
+.flexigrid {
+  padding: 10px;
+}
+
+.flexigrid .hDiv {
+  border-bottom: 1px solid #ccc;
+}
+
+.flexigrid .hDiv th {
+  background-color: #eee;
+  padding: 5px;
+}
+
+.flexigrid .bDiv {
+  border-top: 1px solid #ccc;
+}
+
+.flexigrid .bDiv td {
+  padding: 5px;
+}
+
+.flexigrid div.pDiv input {
+  top: -8px;
+}
+
+.ptogtitle {
+  display: none;
+}
+
+.clientes .flexigrid div.tDiv,
+.comprobantes .flexigrid div.tDiv {
+  display: none;
+}
+
+h5 span {
+  font-weight: 400;
+}
+
+.row.total-block h5 {
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+}
+
+#comprobante_observaciones {
+  border: 1px solid #000000;
+}
+
+body.login-page {
+  background-color: #f0f0f0;
+}
+
+.login-container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 40px 40px 55px 40px;
+  /* Increased padding at top and bottom */
+  margin: 0 auto;
+  width: 100%;
+  max-width: 30rem;
+  margin-top: 100px;
+}
+
+.login-form {
+  margin-top: 20px;
+}
+
+.login-button {
+  background-color: #007BFF;
+  color: #fff;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
+}
+
+.login-form #username {
+  text-transform: uppercase;
+}
+
+/* Custom CSS to remove highlighting of selected option */
+.select2-results__option[aria-selected=true] {
+  background-color: transparent !important;
+  color: #000000 !important;
+}
+.select2-results__option[aria-selected=true]:hover {
+  background-color: #e9ecef !important;
+}
+
+#tipo_comprobante_field_box, #cliente_id_field_box {
+  display: none;
+}
+
+.footer {
+  margin-top: auto;
+}
+
+@font-face {
+  font-family: "MarkPro-Bold";
+  src: url("./src/fonts/MarkPro-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "effra";
+  src: url("./src/fonts/effra-regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "MarkPro-Light";
+  src: url("./src/fonts/MarkPro-Ligth.ttf") format("truetype");
+}

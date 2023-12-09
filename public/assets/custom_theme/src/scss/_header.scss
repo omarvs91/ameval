@@ -1,0 +1,12 @@
+// Header
+
+// Main menu dropdown styling
+@media (min-width: 992px) {
+    .navbar .dropdown-menu {
+        display: none;
+    }
+
+    .navbar .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+}
