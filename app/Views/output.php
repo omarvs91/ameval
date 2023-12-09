@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>.::Sistema de Lavanderia 1.0::.</title>
+    <title>.::Sistema de Cotización 1.0::.</title>
     <link href="<?=base_url()?>assets/bootstrap5/bootstrap.min.css" rel="stylesheet">
     <?php
     foreach ($css_files as $file): ?>
@@ -23,7 +23,7 @@
 <body class="d-flex flex-column min-vh-100 <?php echo isset($css_class) ? $css_class : ''; ?>">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="<?= base_url() ?>">LAVANDERIA VJS
+            <a class="navbar-brand" href="<?= base_url() ?>">AMEVAL
                 <?php if (session()->get('role_id') == 1)
                     echo ' (Admin)'; ?>
             </a>
@@ -128,7 +128,7 @@
     <!-- Footer -->
     <footer class="bg-light text-center py-4 footer">
         <div class="container">
-            <p class="mt-4">Sistema de Lavanderia 1.0</p>
+            <p class="mt-4">Sistema de Cotización 1.0</p>
         </div>
     </footer>
     <!-- JQUERY -->
