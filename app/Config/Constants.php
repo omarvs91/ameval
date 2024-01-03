@@ -92,3 +92,8 @@ define('EVENT_PRIORITY_NORMAL', 100);
  * @deprecated Use \CodeIgniter\Events\Events::PRIORITY_HIGH instead.
  */
 define('EVENT_PRIORITY_HIGH', 10);
+
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'ameval.ddev.site';
+$http_https = isset($_SERVER['HTTPS']) ? "https://" : "http://";
+$baseURL = $http_https . $host;
+define('BASE_URL', $baseURL);

@@ -31,10 +31,15 @@ $routes->get('servicios','Home::servicios');
 $routes->get('servicios/(:any)','Home::servicios/$1');
 $routes->post('servicios','Home::servicios');
 $routes->post('servicios/(:any)','Home::servicios');
+
 $routes->get('users','Home::users');
 $routes->get('users/(:any)','Home::users/$1');
 $routes->post('users','Home::users');
 $routes->post('users/(:any)','Home::users');
+
+$routes->get('change_password/(:any)','Home::change_password/$1');
+$routes->post('change_password/(:any)','Home::change_password');
+
 $routes->get('locales','Home::locales');
 $routes->get('locales/(:any)','Home::locales/$1');
 $routes->post('locales','Home::locales');
@@ -90,3 +95,33 @@ $routes->get('comprobante/(:num)/58mm/(:any)', 'Home::generatePdf58mm/$1');
 $routes->get('whatsapp','Home::whatsapp');
 
 $routes->post('exportcsv','Home::exportCSV');
+
+$routes->get('materiales', 'Home::materiales');
+$routes->get('materiales/(:any)', 'Home::materiales/$1');
+$routes->post('materiales', 'Home::materiales');
+$routes->post('materiales/(:any)', 'Home::materiales');
+
+$routes->get('empleados', 'Home::empleados');
+$routes->get('empleados/(:any)', 'Home::empleados/$1');
+$routes->post('empleados', 'Home::empleados');
+$routes->post('empleados/(:any)', 'Home::empleados');
+
+$routes->get('gastos_indirectos', 'Home::gastos_indirectos');
+$routes->get('gastos_indirectos/(:any)', 'Home::gastos_indirectos/$1');
+$routes->post('gastos_indirectos', 'Home::gastos_indirectos');
+$routes->post('gastos_indirectos/(:any)', 'Home::gastos_indirectos');
+
+$routes->get('op', 'Home::op');
+$routes->get('op/(:any)', 'Home::op/$1');
+$routes->post('op', 'Home::op');
+$routes->post('op/(:any)', 'Home::op');
+
+$routes->get('estados', 'Home::estados');
+$routes->get('estados/(:any)', 'Home::estados/$1');
+$routes->post('estados', 'Home::estados');
+$routes->post('estados/(:any)', 'Home::estados');
+
+$routes->get('op_mano_obra/(:num)', 'Home::op_mano_obra');
+$routes->get('op_mano_obra/(:num)/(:any)', 'Home::op_mano_obra/$1');
+$routes->post('op_mano_obra/(:num)', 'Home::op_mano_obra');
+$routes->post('op_mano_obra/(:num)/(:any)', 'Home::op_mano_obra');

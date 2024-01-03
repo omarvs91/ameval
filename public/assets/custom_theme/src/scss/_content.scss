@@ -1,5 +1,7 @@
 // Content
 
+// ::BODY STYLES::
+// Making body and footer to fit the screen size
 body {
     display: flex;
     flex-direction: column;
@@ -10,66 +12,25 @@ main {
     flex: 1 0 auto;
 }
 
-// Flexigrid styling to match bootstrap
-.flexigrid div.form-div input[type=text] {
-    height: 2.5rem;
+// ::END BODY STYLES::
+
+// ::START GROCERY CRUD BOOTSTRAP 5::
+
+// Pagination buttons
+button.page-link {
+    height: 2.35rem;
 }
 
-.flexigrid {
-    padding: 10px;
+// Adding margin bottom to GC enterprise textarea
+.mb-3.row:has(div.quill) {
+    margin-bottom: 4rem !important;
 }
 
-.flexigrid .hDiv {
-    border-bottom: 1px solid #ccc;
-}
+// ::END GROCERY CRUD::
 
-.flexigrid .hDiv th {
-    background-color: #eee;
-    padding: 5px;
-}
-
-.flexigrid .bDiv {
-    border-top: 1px solid #ccc;
-}
-
-.flexigrid .bDiv td {
-    padding: 5px;
-}
-
-.flexigrid div.pDiv input {
-    top: -8px;
-}
-
-.ptogtitle {
-    display: none;
-}
-
-.clientes,
-.comprobantes {
-    .flexigrid div.tDiv {
-        display: none;
-    }
-}
-
-// STYLES OF TOTAL SECTION IN REGISTRAR COMPROBANTE PAGE
-h5 span {
-    font-weight: 400;
-}
-
-.row.total-block h5 {
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-}
-
-#comprobante_observaciones {
-    border: 1px solid #000000;
-}
-
-// LOGIN STYLES
-
+// ::START LOGIN STYLES::
 body.login-page {
-    background-color: #f0f0f0;
+    background-color: #212529;
 }
 
 .login-container {
@@ -102,15 +63,4 @@ body.login-page {
     text-transform: uppercase;
 }
 
-/* Custom CSS to remove highlighting of selected option */
-.select2-results__option[aria-selected=true] {
-    background-color: transparent !important;
-    color: #000000!important;
-    &:hover {
-        background-color: #e9ecef!important;
-    }
-}
-
-#tipo_comprobante_field_box, #cliente_id_field_box {
-    display: none;
-}
+// ::END LOGIN STYLES::

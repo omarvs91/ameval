@@ -3,30 +3,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>.::Sistema de Cotización 1.0::.</title>
-    <link href="<?=base_url()?>assets/bootstrap5/bootstrap.min.css" rel="stylesheet">
-    <?php
-    foreach ($css_files as $file): ?>
-        <link type="text/css" rel="stylesheet" href="<?php echo $file; ?>" />
-    <?php endforeach; ?>
+    <title>SISTEMA DE OP</title>
+    <link href="<?= base_url() ?>assets/bootstrap5/bootstrap.min.css" rel="stylesheet">
     <!-- SASS -->
     <link href="<?= base_url() ?>assets/custom_theme/style.css" rel="stylesheet">
-    <!-- Select2 styles -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
-    <!-- Select2 bootstrap theme -->
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body class="d-flex flex-column min-vh-100 <?php echo isset($css_class) ? $css_class : ''; ?>">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="<?= base_url() ?>">AMEVAL
-                <?php if (session()->get('role_id') == 1)
-                    echo ' (Admin)'; ?>
-            </a>
+            <a class="navbar-brand" href="<?= base_url() ?>">AMEVAL</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -39,46 +28,50 @@
                             REGISTRAR
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="registrarDropdown">
-                            <li><a class="dropdown-item" href="<?= base_url() ?>registrar_comprobante">COMPROBANTE</a>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>op/add">ORDEN DE PRODUCCION</a>
                             </li>
                             <li><a class="dropdown-item" href="<?= base_url() ?>clientes/add">CLIENTE</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>materiales/add">MATERIAL</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>empleados/add">EMPLEADO</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>gastos_indirectos/add">GASTOS INDIRECTO</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>estados/add">ESTADOS DE OP</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown hover-dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="consultarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            CONSULTAR
+                            CONSULTAR / EDITAR
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="consultarDropdown">
-                            <li><a class="dropdown-item" href="<?= base_url() ?>comprobantes">COMPROBANTES TODOS</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>comprobantes_en_curso">COMPROBANTES EN CURSO</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>comprobantes_pagados">COMPROBANTES PAGADOS</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>comprobantes_pendiente_pago">COMPROBANTES PENDIENTE DE PAGO</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>comprobantes_recojo">COMPROBANTES PARA RECOJO</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>op">TODAS LAS OP</a></li>
                             <li><a class="dropdown-item" href="<?= base_url() ?>clientes">CLIENTES</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>materiales">MATERIALES</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>empleados">EMPLEADOS</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>gastos_indirectos">GASTOS INDIRECTOS</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>estados">ESTADOS DE OP</a></li>
                         </ul>
                     </li>
-                    <?php if (session()->get('role_id') == 1) { ?>
-                        <li class="nav-item dropdown hover-dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="consultarDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                OPCIONES AVANZADAS
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="consultarDropdown">
-                                <li><a class="dropdown-item" href="<?= base_url() ?>estado_comprobantes">ESTADO COMPROBANTES</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url() ?>estado_ropa">ESTADO ROPA</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url() ?>locales">LOCALES</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url() ?>metodo_pago">MÉTODOS DE PAGO</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url() ?>roles">ROLES</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url() ?>servicios">SERVICIOS</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url() ?>users">USUARIOS</a></li>
-                            </ul>
-                        </li>
-                    <?php } ?>
+                    <li class="nav-item dropdown hover-dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="consultarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            OPCIONES AVANZADAS
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="consultarDropdown">
+                            <li><a class="dropdown-item" href="<?= base_url() ?>users">USUARIOS DEL SISTEMA</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>roles">ROLES DE USUARIOS</a></li>
+                        </ul>
+                    </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url() ?>logout">Cerrar Sesion</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person"></i> <?=session()->get('username')?>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="<?= base_url() ?>change_password/edit/<?=session()->get('user_id')?>">CAMBIAR CONTRASEÑA</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>logout">SALIR DEL SISTEMA</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -126,9 +119,9 @@
         </div>
     </main>
     <!-- Footer -->
-    <footer class="bg-light text-center py-4 footer">
+    <footer class="bg-dark text-white text-center py-4 footer">
         <div class="container">
-            <p class="mt-4">Sistema de Cotización 1.0</p>
+            <p class="mt-4">SISTEMA DE OP 1.0</p>
         </div>
     </footer>
     <!-- JQUERY -->
@@ -141,10 +134,6 @@
     <?php foreach ($js_files as $file): ?>
         <script src="<?php echo $file; ?>"></script>
     <?php endforeach; ?>
-    <!-- Select2 CSS and JS files -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
-        integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- CUSTOM JS -->
     <script type="text/javascript" src="<?= base_url() ?>assets/custom_theme/theme.js"></script>
 </body>
