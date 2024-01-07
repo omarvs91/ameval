@@ -56,7 +56,7 @@ class Home extends BaseController
         $crud = $this->_getGroceryCrudEnterprise();
         $crud->setTable('op');
         $crud->defaultOrdering('op.id', 'desc');
-        
+
         $crud->setSkin('dark');
         $crud->setSubject('OP');
 
@@ -69,24 +69,24 @@ class Home extends BaseController
         $crud->setRelation('last_updated_by_user_id', 'users', 'username');
 
         $crud->fieldType('tipo_comprobante', 'dropdown_search', [
-            'B' => 'BOLETA',
-            'F' => 'FACTURA'
+            "B" => "BOLETA",
+            "F" => "FACTURA"
         ]);
 
         $crud->fieldType('tipo', 'dropdown_search', [
-            'S' => 'SERVICIO',
-            'F' => 'FABRICACION'
+            "S" => "SERVICIO",
+            "F" => "FABRICACION"
         ]);
 
         $crud->fieldType('estado_pago', 'dropdown_search', [
-            'P' => 'PARCIALMENTE PAGADO',
-            'T' => 'TOTALMENTE PAGADO'
+            "P" => "PARCIALMENTE PAGADO",
+            "T" => "TOTALMENTE PAGADO"
         ]);
 
         $crud->columns(['cod_op', 'cod_comprobante', 'estado_op_id', 'abonado', 'costo_total']);
 
         $crud->readFields(['cod_op', 'cod_comprobante', 'cliente_id', 'descripcion', 'estado_op_id', 'abonado', 'costo_total', 'registered_by_user_id', 'last_updated_by_user_id', 'fecha_creacion', 'fecha_actualizacion', 'observacion']);
-        
+
         $crud->addFields(['cliente_id', 'tipo', 'tipo_comprobante', 'descripcion', 'estado_pago', 'costo_total', 'abonado', 'observacion']);
 
         $crud->editFields(['descripcion', 'estado_op_id', 'fecha_inicio', 'fecha_entrega', 'observacion']);
@@ -108,7 +108,7 @@ class Home extends BaseController
             'tipo' => 'SERVICIO / FABRICACION',
             'estado_pago' => 'ESTADO DE PAGO',
             'fecha_inicio' => 'FECHA DE INICIO',
-            'fecha_entrega'=> 'FECHA DE ENTREGA'
+            'fecha_entrega' => 'FECHA DE ENTREGA'
         ]);
 
         $crud->setTexteditor(['descripcion']);
@@ -126,25 +126,26 @@ class Home extends BaseController
         }, true);
 
         $crud->setActionButton('Editar Costos Indirectos', 'fa-solid fa-hand-holding-dollar', function ($row) {
-            return '/op_costos_indirectos/' . $row->id;
+            return '/op_gastos_indirectos/' . $row->id;
         }, true);
 
         $crud->callbackAfterInsert(function ($stateParameters) {
             $id = $stateParameters->insertId;
             $tipo_comprobante = $stateParameters->data['tipo_comprobante'];
-            $db = \Config\Database::connect();
+
+            // Load the ComprobanteCounter model
+            $comprobanteCounterModel = new \App\Models\ComprobanteCounter();
 
             // Get the last_value for the tipo_comprobante
-            $query = $db->query("SELECT last_value FROM comprobante_counter WHERE tipo_comprobante = ?", [$tipo_comprobante]);
-            $row = $query->getRow();
+            $comprobanteCounter = $comprobanteCounterModel->where('tipo_comprobante', $tipo_comprobante)->first();
 
             // If this tipo_comprobante is not in the comprobante_counter table yet, initialize it
-            if ($row === null) {
-                $db->query("INSERT INTO comprobante_counter(tipo_comprobante, last_value) VALUES (?, 1)", [$tipo_comprobante]);
+            if ($comprobanteCounter === null) {
+                $comprobanteCounterModel->insert(['tipo_comprobante' => $tipo_comprobante, 'last_value' => 1]);
                 $last_value = 1;
             } else {
-                $last_value = $row->last_value + 1;
-                $db->query("UPDATE comprobante_counter SET last_value = ? WHERE tipo_comprobante = ?", [$last_value, $tipo_comprobante]);
+                $last_value = $comprobanteCounter['last_value'] + 1;
+                $comprobanteCounterModel->update($tipo_comprobante, ['last_value' => $last_value]);
             }
 
             // Generate the cod_comprobante
@@ -160,12 +161,22 @@ class Home extends BaseController
             $cod_comprobante = $prefix . '001-' . $last_value;
             $cod_op = '0' . $id;
 
-            $db->query("UPDATE op SET cod_comprobante = ?, cod_op = ?, registered_by_user_id = ?, last_updated_by_user_id = ? WHERE id = ?", [$cod_comprobante, $cod_op, session()->get('user_id'), session()->get('user_id'), $id]);
+            // Load the Op model
+            $opModel = new \App\Models\Op();
+
+            // Update the op record
+            $opModel->update($id, [
+                'cod_comprobante' => $cod_comprobante,
+                'cod_op' => $cod_op,
+                'registered_by_user_id' => session()->get('user_id'),
+                'last_updated_by_user_id' => session()->get('user_id')
+            ]);
+
 
             return $stateParameters;
         });
 
-        $crud->callbackBeforeUpdate(function ($stateParameters) {            
+        $crud->callbackBeforeUpdate(function ($stateParameters) {
             $stateParameters->data['last_updated_by_user_id'] = session()->get('user_id');
             return $stateParameters;
         });
@@ -189,13 +200,14 @@ class Home extends BaseController
         $crud->displayAs([
             'op_id' => 'CÓDIGO DE OP',
             'empleado_id' => 'TIPO DE EMPLEADO',
-            'horas_trabajadas' => 'HORAS A TRABAJAR',
-            'valor_x_hora' => 'VALOR POR HORA',
+            'horas_trabajadas' => 'HORAS HOMBRE',
             'cantidad' => 'CANTIDAD DE PERSONAL',
+            'valor_x_hora' => 'VALOR POR HORA',            
             'total' => 'TOTAL'
         ]);
         $crud->columns(['empleado_id', 'horas_trabajadas', 'valor_x_hora', 'cantidad', 'total']);
         $crud->addFields(['empleado_id', 'cantidad', 'horas_trabajadas']);
+        $crud->editFields(['empleado_id', 'cantidad', 'horas_trabajadas']);
 
         // Get the URL path and explode it to extract segments
         $uri = service('uri');
@@ -225,7 +237,7 @@ class Home extends BaseController
             $valor_x_hora = $tbl_empleados['valor_x_hora'];
 
             // Calculate total based on hours worked and value per hour
-            $total = $valor_x_hora * $stateParameters->data['horas_trabajadas'];
+            $total = $valor_x_hora * $stateParameters->data['horas_trabajadas'] * $stateParameters->data['cantidad'];
             $formattedTotal = number_format($total, 2, '.', '');
 
             // Get the URL path and explode it to extract segments
@@ -246,6 +258,98 @@ class Home extends BaseController
 
             return $stateParameters;
         });
+
+        $crud->callbackBeforeUpdate(function ($stateParameters) use ($db) {
+
+            // Retrieve employee's value per hour from the database
+            $q = $db->query("SELECT valor_x_hora FROM empleados WHERE id = ?", $stateParameters->data['empleado_id']);
+            $tbl_empleados = $q->getRowArray();
+            $valor_x_hora = $tbl_empleados['valor_x_hora'];
+            $total = $valor_x_hora * $stateParameters->data['horas_trabajadas'] * $stateParameters->data['cantidad'];
+            $stateParameters->data['total'] = number_format($total, 2, '.', '');
+        
+            return $stateParameters;
+        });
+
+        // Render the CRUD
+        $output = $crud->render();
+        
+        /*$js_files = $output->js_files;
+        $output = $output->output;
+        $title = 'OP 0' . $uri->getSegment(2) . ': MANO DE OBRA';
+
+        return $this->_mainOutput(['output' => $output, 'title' => $title, 'js_files' => $js_files]);*/
+
+        return $this->_mainOutput($output);
+    }
+    public function materiales()
+    {
+        $crud = $this->_getGroceryCrudEnterprise();
+        $crud->setTable('op_materiales');
+        $crud->setSkin('dark');
+        $crud->setSubject('MATERIAL');
+        $crud->displayAs([
+            'material' => 'MATERIAL',
+            'precio_unitario' => 'PRECIO UNITARIO (S/.)',
+            'cantidad' => 'CANTIDAD',
+            'precio_uni' => 'PRECIO UNITARIO',
+            'total' => 'TOTAL',
+            'op_id' => 'OP'
+        ]);
+
+        // Get the URL path and explode it to extract segments
+        $uri = service('uri');
+        $path = $uri->getPath();
+        $segments = explode('/', $path);
+
+        // Find the index of "op_gastos_indirectos" in segments array
+        $op_materiales_index = array_search('op_materiales', $segments);
+
+        // Extract the segment after "op_mano_obra"
+        $segment = $segments[$op_materiales_index + 1] ?? null;
+
+        $crud->where([
+            'op_materiales.op_id' => $segment
+        ]);
+
+        // Render the CRUD
+        $output = $crud->render();
+        return $this->_mainOutput($output);
+    }
+    public function gastos_indirectos()
+    {
+        $crud = $this->_getGroceryCrudEnterprise();
+        $crud->setTable('op_gastos_indirectos');
+        $crud->setSkin('dark');
+        $crud->setSubject('GASTO INDIRECTO');
+        $crud->displayAs([
+            'gasto_indirecto' => 'GASTO INDIRECTO',
+            'horas_trabajadas' => 'HORAS USADAS',
+            'valor_x_hora' => 'PRECIO POR HORA (S/.)',
+            'op_id' => 'OP',
+            'total' => 'TOTAL'
+        ]);
+
+        $crud->columns(['op_id', 'gasto_indirecto','horas_trabajadas', 'valor_x_hora', 'total']);
+
+        $crud->addFields(['gasto_indirecto','horas_trabajadas','valor_x_hora']);
+
+        $crud->fieldType('valor_x_hora', 'float');
+
+        // Get the URL path and explode it to extract segments
+        $uri = service('uri');
+        $path = $uri->getPath();
+        $segments = explode('/', $path);
+
+        // Find the index of "op_gastos_indirectos" in segments array
+        $op_gastos_indirectos_index = array_search('op_gastos_indirectos', $segments);
+
+        // Extract the segment after "op_mano_obra"
+        $segment = $segments[$op_gastos_indirectos_index + 1] ?? null;
+
+        $crud->where([
+            'op_gastos_indirectos.op_id' => $segment
+        ]);
 
         // Render the CRUD
         $output = $crud->render();
@@ -305,21 +409,6 @@ class Home extends BaseController
         $output = $crud->render();
         return $this->_mainOutput($output);
     }
-    public function materiales()
-    {
-        $crud = $this->_getGroceryCrudEnterprise();
-        $crud->setTable('materiales');
-        $crud->setSkin('dark');
-        $crud->setSubject('MATERIAL');
-        $crud->displayAs([
-            'material' => 'MATERIAL',
-            'precio_unitario' => 'PRECIO UNITARIO (S/.)'
-        ]);
-
-        // Render the CRUD
-        $output = $crud->render();
-        return $this->_mainOutput($output);
-    }
     public function empleados()
     {
         $crud = $this->_getGroceryCrudEnterprise();
@@ -329,21 +418,6 @@ class Home extends BaseController
         $crud->displayAs([
             'nom_empleado' => 'EMPLEADO',
             'valor_x_hora' => 'VALOR POR HORA (S/.)'
-        ]);
-
-        // Render the CRUD
-        $output = $crud->render();
-        return $this->_mainOutput($output);
-    }
-    public function gastos_indirectos()
-    {
-        $crud = $this->_getGroceryCrudEnterprise();
-        $crud->setTable('gastos_indirectos');
-        $crud->setSkin('dark');
-        $crud->setSubject('GASTO INDIRECTO');
-        $crud->displayAs([
-            'nom_gasto_indirecto' => 'GASTO INDIRECTO',
-            'precio_x_hora' => 'PRECIO POR HORA (S/.)'
         ]);
 
         // Render the CRUD
@@ -380,7 +454,7 @@ class Home extends BaseController
         $crud->setRelation('role_id', 'roles', 'role_name');
         $crud->setSubject('USUARIO DEL SISTEMA');
         $crud->setSkin('dark');
-        
+
         $crud->fieldType('habilitado', 'dropdown_search', [
             '0' => 'DESHABILITADO',
             '1' => 'HABILITADO'
@@ -438,14 +512,14 @@ class Home extends BaseController
                 'password' => 'CONTRASEÑA'
             ]);
 
-            $crud->unsetEditFields(['username','role_id','habilitado']);
+            $crud->unsetEditFields(['username', 'role_id', 'habilitado']);
             $crud->editFields(['password']);
-            
+
             // Modify these callbacks to transform the username to uppercase in the add and edit forms
             $crud->callbackEditField('password', function ($postArray, $primaryKey) {
                 return $this->editar_campo_password($postArray, $primaryKey);
             });
-            
+
             $crud->callbackBeforeUpdate(function ($stateParameters) {
                 return $this->actualizar_password($stateParameters);
             });
@@ -483,39 +557,5 @@ class Home extends BaseController
 
         // Update the last_updated_by field in the comprobantes table
         $db->query("UPDATE op SET last_updated_by_user_id = ? WHERE id = ?", [$user_id, $op_id]);
-    }
-    public function incrementComprobanteCounter($id, $tipo_comprobante)
-    {
-        $db = \Config\Database::connect();
-
-        // Get the last_value for the tipo_comprobante
-        $query = $db->query("SELECT last_value FROM comprobante_counter WHERE tipo_comprobante = ?", [$tipo_comprobante]);
-        $row = $query->getRow();
-
-        // If this tipo_comprobante is not in the comprobante_counter table yet, initialize it
-        if ($row === null) {
-            $db->query("INSERT INTO comprobante_counter(tipo_comprobante, last_value) VALUES (?, 1)", [$tipo_comprobante]);
-            $last_value = 1;
-        } else {
-            $last_value = $row->last_value + 1;
-            $db->query("UPDATE comprobante_counter SET last_value = ? WHERE tipo_comprobante = ?", [$last_value, $tipo_comprobante]);
-        }
-
-        // Generate the cod_comprobante
-        $prefix = '';
-        switch ($tipo_comprobante) {
-            case 'N':
-                $prefix = 'NV';
-                break;
-            case 'B':
-                $prefix = 'B';
-                break;
-            case 'F':
-                $prefix = 'F';
-                break;
-        }
-        $cod_comprobante = $prefix . '001-' . $last_value;
-
-        $db->query("UPDATE comprobantes SET cod_comprobante = ? WHERE id = ?", [$cod_comprobante, $id]);
     }
 }

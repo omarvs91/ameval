@@ -96,20 +96,20 @@ $routes->get('whatsapp','Home::whatsapp');
 
 $routes->post('exportcsv','Home::exportCSV');
 
-$routes->get('materiales', 'Home::materiales');
-$routes->get('materiales/(:any)', 'Home::materiales/$1');
-$routes->post('materiales', 'Home::materiales');
-$routes->post('materiales/(:any)', 'Home::materiales');
+$routes->get('op_materiales', 'Home::materiales');
+$routes->get('op_materiales/(:any)', 'Home::materiales/$1');
+$routes->post('op_materiales', 'Home::materiales');
+$routes->post('op_materiales/(:any)', 'Home::materiales');
 
 $routes->get('empleados', 'Home::empleados');
 $routes->get('empleados/(:any)', 'Home::empleados/$1');
 $routes->post('empleados', 'Home::empleados');
 $routes->post('empleados/(:any)', 'Home::empleados');
 
-$routes->get('gastos_indirectos', 'Home::gastos_indirectos');
-$routes->get('gastos_indirectos/(:any)', 'Home::gastos_indirectos/$1');
-$routes->post('gastos_indirectos', 'Home::gastos_indirectos');
-$routes->post('gastos_indirectos/(:any)', 'Home::gastos_indirectos');
+$routes->get('op_gastos_indirectos', 'Home::gastos_indirectos');
+$routes->get('op_gastos_indirectos/(:any)', 'Home::gastos_indirectos/$1');
+$routes->post('op_gastos_indirectos', 'Home::gastos_indirectos');
+$routes->post('op_gastos_indirectos/(:any)', 'Home::gastos_indirectos');
 
 $routes->get('op', 'Home::op');
 $routes->get('op/(:any)', 'Home::op/$1');

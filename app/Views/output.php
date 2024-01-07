@@ -30,11 +30,6 @@
                         <ul class="dropdown-menu" aria-labelledby="registrarDropdown">
                             <li><a class="dropdown-item" href="<?= base_url() ?>op/add">ORDEN DE PRODUCCION</a>
                             </li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>clientes/add">CLIENTE</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>materiales/add">MATERIAL</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>empleados/add">EMPLEADO</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>gastos_indirectos/add">GASTOS INDIRECTO</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>estados/add">ESTADOS DE OP</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown hover-dropdown">
@@ -45,9 +40,9 @@
                         <ul class="dropdown-menu" aria-labelledby="consultarDropdown">
                             <li><a class="dropdown-item" href="<?= base_url() ?>op">TODAS LAS OP</a></li>
                             <li><a class="dropdown-item" href="<?= base_url() ?>clientes">CLIENTES</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>materiales">MATERIALES</a></li>
+                            
                             <li><a class="dropdown-item" href="<?= base_url() ?>empleados">EMPLEADOS</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url() ?>gastos_indirectos">GASTOS INDIRECTOS</a></li>
+                            
                             <li><a class="dropdown-item" href="<?= base_url() ?>estados">ESTADOS DE OP</a></li>
                         </ul>
                     </li>
@@ -75,46 +70,11 @@
                     </li>
                 </ul>
             </div>
-            <!-- Bootstrap modal structure -->
-            <div class="modal" id="printModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-fullscreen" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Vista de Impresion</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <nav>
-                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                    <button class="nav-link active" id="nav-58mm-tab" data-bs-toggle="tab"
-                                        data-bs-target="#nav-58mm" type="button" role="tab" aria-controls="nav-58mm"
-                                        aria-selected="true">58MM</button>
-                                    <button class="nav-link" id="nav-a4-tab" data-bs-toggle="tab"
-                                        data-bs-target="#nav-a4" type="button" role="tab" aria-controls="nav-a4"
-                                        aria-selected="false">A4</button>
-                                </div>
-                            </nav>
-                            <div class="tab-content" id="nav-tabContent">
-                                <div class="tab-pane fade show active" id="nav-58mm" role="tabpanel"
-                                    aria-labelledby="nav-58mm-tab" tabindex="0">
-                                    <iframe id="printIframe" width="100%" height="100%" frameborder="0"></iframe>
-                                </div>
-                                <div class="tab-pane fade" id="nav-a4" role="tabpanel" aria-labelledby="nav-a4-tab"
-                                    tabindex="0">
-                                    <iframe id="printIframe2" width="100%" height="100%" frameborder="0"></iframe>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </nav>
     <main class="flex-fill">
         <div class="container mt-5 mb-5">
+            <h2><?php echo isset($title) ? $title : ''; ?></h2>
             <?php echo $output; ?>
         </div>
     </main>
