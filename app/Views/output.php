@@ -9,7 +9,9 @@
     <link href="<?= base_url() ?>assets/custom_theme/style.css" rel="stylesheet">
     <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body class="d-flex flex-column min-vh-100 <?php echo isset($css_class) ? $css_class : ''; ?>">
@@ -40,9 +42,9 @@
                         <ul class="dropdown-menu" aria-labelledby="consultarDropdown">
                             <li><a class="dropdown-item" href="<?= base_url() ?>op">TODAS LAS OP</a></li>
                             <li><a class="dropdown-item" href="<?= base_url() ?>clientes">CLIENTES</a></li>
-                            
+
                             <li><a class="dropdown-item" href="<?= base_url() ?>empleados">EMPLEADOS</a></li>
-                            
+
                             <li><a class="dropdown-item" href="<?= base_url() ?>estados">ESTADOS DE OP</a></li>
                         </ul>
                     </li>
@@ -61,10 +63,12 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person"></i> <?=session()->get('username')?>
+                            <i class="bi bi-person"></i> <?= session()->get('username') ?>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="<?= base_url() ?>change_password/edit/<?=session()->get('user_id')?>">CAMBIAR CONTRASEÑA</a></li>
+                            <li><a class="dropdown-item"
+                                    href="<?= base_url() ?>change_password/edit/<?= session()->get('user_id') ?>">CAMBIAR
+                                    CONTRASEÑA</a></li>
                             <li><a class="dropdown-item" href="<?= base_url() ?>logout">SALIR DEL SISTEMA</a></li>
                         </ul>
                     </li>
@@ -73,8 +77,32 @@
         </div>
     </nav>
     <main class="flex-fill">
-        <div class="container mt-5 mb-5">
-            <h2><?php echo isset($title) ? $title : ''; ?></h2>
+        <div class="container mt-5 mb-5">            
+            <h2 class="mb-5">
+                <?php
+                    $uri = service('uri');
+                    $segment1 = $uri->getSegment(1);
+
+                    switch ($segment1) {
+                        case 'op_mano_obra':
+                            // Code to be executed if $segment is 'value1'
+                            echo 'OP 0' . $uri->getSegment(2) . ': MANO DE OBRA';                            
+                            break;
+                        case 'op_materiales':
+                            // Code to be executed if $segment is 'value2'
+                            echo 'OP 0' . $uri->getSegment(2) . ': MATERIALES';
+                            break;
+                        case 'op_gastos_indirectos':
+                            // Code to be executed if $segment is 'value2'
+                            echo 'OP 0' . $uri->getSegment(2) . ': GASTOS INDIRECTOS';
+                            break;
+                        default:
+                            // Code to be executed if $segment is different from all labels
+                            echo '';
+                            break;
+                    }
+                ?>
+            </h2>
             <?php echo $output; ?>
         </div>
     </main>
