@@ -119,15 +119,15 @@ class Home extends BaseController
 
         $crud->setActionButton('Editar Mano de Obra', 'fa fa-user', function ($row) {
             return '/op_mano_obra/' . $row->id;
-        }, true);
+        }, false);
 
         $crud->setActionButton('Editar Materiales', 'fa-solid fa-toolbox', function ($row) {
             return '/op_materiales/' . $row->id;
-        }, true);
+        }, false);
 
         $crud->setActionButton('Editar Costos Indirectos', 'fa-solid fa-hand-holding-dollar', function ($row) {
             return '/op_gastos_indirectos/' . $row->id;
-        }, true);
+        }, false);
 
         $crud->callbackAfterInsert(function ($stateParameters) {
             $id = $stateParameters->insertId;
