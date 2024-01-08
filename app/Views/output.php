@@ -93,7 +93,7 @@
                     $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> Data not available</p>';
                 }
 
-                $p_restante = '<p class="mb-5"><b>PRESUPUESTO RESTANTE:</b> S/.</p>';
+                $p_restante = '<p class="mb-4"><b>PRESUPUESTO RESTANTE:</b> S/.</p>';
 
                 switch ($segment1) {
                     case 'op_mano_obra':
@@ -106,7 +106,7 @@
                         break;
                     case 'op_materiales':
                         // Code to be executed if $segment is 'value2'
-                        echo '<h2 class="mb-5 d-inline-block pe-2">OP 0' . $segment2 . ': MATERIALES</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                        echo '<h2 class="mb-4 d-inline-block pe-2">OP 0' . $segment2 . ': MATERIALES</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
                         echo $p_total;
                         echo $p_restante;
                         echo $output;
@@ -114,34 +114,34 @@
                         break;
                     case 'op_gastos_indirectos':
                         // Code to be executed if $segment is 'value2'
-                        echo '<h2 class="mb-5 d-inline-block pe-2">OP 0' . $segment2 . ': GASTOS INDIRECTOS</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                        echo '<h2 class="mb-4 d-inline-block pe-2">OP 0' . $segment2 . ': GASTOS INDIRECTOS</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
                         echo $p_total;
                         echo $p_restante;
                         echo $output;
                         echo $regresar;
                         break;
                     case 'op':
-                        echo '<h2 class="mb-5 d-inline-block pe-2">LISTA DE OPs</h2>';
+                        echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE OPs</h2>';
                         echo $output;
                         break;
                     case 'users':
-                        echo '<h2 class="mb-5 d-inline-block pe-2">USUARIOS DEL SISTEMA</h2>';
+                        echo '<h2 class="mb-4 d-inline-block pe-2">USUARIOS DEL SISTEMA</h2>';
                         echo $output;
                         break;
                     case 'roles':
-                        echo '<h2 class="mb-5 d-inline-block pe-2">ROLES DE USUARIOS</h2>';
+                        echo '<h2 class="mb-4 d-inline-block pe-2">ROLES DE USUARIOS</h2>';
                         echo $output;
                         break;
                     case 'clientes':
-                        echo '<h2 class="mb-5 d-inline-block pe-2">LISTA DE CLIENTES</h2>';
+                        echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE CLIENTES</h2>';
                         echo $output;
                         break;
                     case 'empleados':
-                        echo '<h2 class="mb-5 d-inline-block pe-2">LISTA DE EMPLEADOS</h2>';
+                        echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE EMPLEADOS</h2>';
                         echo $output;
                         break;
                     case 'estados':
-                        echo '<h2 class="mb-5 d-inline-block pe-2">LISTA DE ESTADOS DE OP</h2>';
+                        echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE ESTADOS DE OP</h2>';
                         echo $output;
                         break;
                     default:
