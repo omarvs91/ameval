@@ -40012,6 +40012,16 @@ main {
   flex: 1 0 auto;
 }
 
+.regresar {
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.3s ease-in-out;
+}
+.regresar:hover {
+  text-decoration: underline;
+  transition: all 0.3s ease-in-out;
+}
+
 button.page-link {
   height: 2.35rem;
 }

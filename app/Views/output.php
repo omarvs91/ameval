@@ -78,32 +78,36 @@
     </nav>
     <main class="flex-fill">
         <div class="container mt-5 mb-5">            
-            <h2 class="mb-5">
-                <?php
-                    $uri = service('uri');
-                    $segment1 = $uri->getSegment(1);
+            <?php
+                $uri = service('uri');
+                $segment1 = $uri->getSegment(1);
+                $regresar = '<h4 class="mt-5 text-center"><a class="regresar" href="' . base_url() . 'op">REGRESAR</a></h4>';
 
-                    switch ($segment1) {
-                        case 'op_mano_obra':
-                            // Code to be executed if $segment is 'value1'
-                            echo 'OP 0' . $uri->getSegment(2) . ': MANO DE OBRA';                            
-                            break;
-                        case 'op_materiales':
-                            // Code to be executed if $segment is 'value2'
-                            echo 'OP 0' . $uri->getSegment(2) . ': MATERIALES';
-                            break;
-                        case 'op_gastos_indirectos':
-                            // Code to be executed if $segment is 'value2'
-                            echo 'OP 0' . $uri->getSegment(2) . ': GASTOS INDIRECTOS';
-                            break;
-                        default:
-                            // Code to be executed if $segment is different from all labels
-                            echo '';
-                            break;
-                    }
-                ?>
-            </h2>
-            <?php echo $output; ?>
+                switch ($segment1) {
+                    case 'op_mano_obra':
+                        // Code to be executed if $segment is 'value1'
+                        echo '<h2 class="mb-5">OP 0' . $uri->getSegment(2) . ': MANO DE OBRA</h2>';
+                        echo $output;
+                        echo $regresar;
+                        break;
+                    case 'op_materiales':
+                        // Code to be executed if $segment is 'value2'
+                        echo '<h2 class="mb-5">OP 0' . $uri->getSegment(2) . ': MATERIALES</h2>';
+                        echo $output;
+                        echo $regresar;
+                        break;
+                    case 'op_gastos_indirectos':
+                        // Code to be executed if $segment is 'value2'
+                        echo '<h2 class="mb-5">OP 0' . $uri->getSegment(2) . ': GASTOS INDIRECTOS</h2>';
+                        echo $output;
+                        echo $regresar;
+                        break;
+                    default:
+                        // Code to be executed if $segment is different from all labels
+                        echo $output;
+                        break;
+                }
+            ?>
         </div>
     </main>
     <!-- Footer -->
