@@ -81,24 +81,38 @@
             <?php
                 $uri = service('uri');
                 $segment1 = $uri->getSegment(1);
+                $segment2 = $uri->getSegment(2);
                 $regresar = '<h4 class="mt-5 text-center"><a class="regresar" href="' . base_url() . 'op">REGRESAR</a></h4>';
+
+                $db = \Config\Database::connect();
+                $q = $db->query("SELECT costo_total FROM op WHERE id = ?", $segment2);
+                $a = $q->getRowArray();
+                $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> S/. ' . $a['costo_total'] . '</p>';
+
+                $p_restante = '<p class="mb-5"><b>PRESUPUESTO RESTANTE:</b> S/.</p>';
 
                 switch ($segment1) {
                     case 'op_mano_obra':
                         // Code to be executed if $segment is 'value1'
-                        echo '<h2 class="mb-5 d-inline-block pe-2">OP 0' . $uri->getSegment(2) . ': MANO DE OBRA</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                        echo '<h2 class="mb-2 d-inline-block pe-2">OP 0' . $segment2 . ': MANO DE OBRA</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';                        
+                        echo $p_total;
+                        echo $p_restante;
                         echo $output;
                         echo $regresar;
                         break;
                     case 'op_materiales':
                         // Code to be executed if $segment is 'value2'
-                        echo '<h2 class="mb-5 d-inline-block pe-2">OP 0' . $uri->getSegment(2) . ': MATERIALES</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                        echo '<h2 class="mb-5 d-inline-block pe-2">OP 0' . $segment2 . ': MATERIALES</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                        echo $p_total;
+                        echo $p_restante;
                         echo $output;
                         echo $regresar;
                         break;
                     case 'op_gastos_indirectos':
                         // Code to be executed if $segment is 'value2'
-                        echo '<h2 class="mb-5 d-inline-block pe-2">OP 0' . $uri->getSegment(2) . ': GASTOS INDIRECTOS</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                        echo '<h2 class="mb-5 d-inline-block pe-2">OP 0' . $segment2 . ': GASTOS INDIRECTOS</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                        echo $p_total;
+                        echo $p_restante;
                         echo $output;
                         echo $regresar;
                         break;
