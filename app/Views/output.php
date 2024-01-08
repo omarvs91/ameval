@@ -63,7 +63,8 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person"></i> <?= session()->get('username') ?>
+                            <i class="bi bi-person"></i>
+                            <?= session()->get('username') ?>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item"
@@ -77,78 +78,102 @@
         </div>
     </nav>
     <main class="flex-fill">
-        <div class="container mt-5 mb-5">            
+        <div class="container mt-5 mb-5">
             <?php
-                $uri = service('uri');
-                $segment1 = $uri->getSegment(1);
-                $segment2 = $uri->getSegment(2);
-                $regresar = '<h4 class="mt-5 text-center"><a class="regresar" href="' . base_url() . 'op">REGRESAR</a></h4>';
+            $uri = service('uri');
+            $segment1 = $uri->getSegment(1);
+            $segment2 = $uri->getSegment(2);
+            $regresar = '<h4 class="mt-5 text-center"><a class="regresar" href="' . base_url() . 'op">REGRESAR</a></h4>';
 
-                $db = \Config\Database::connect();
-                $q = $db->query("SELECT costo_total FROM op WHERE id = ?", $segment2);
-                $a = $q->getRowArray();
-                if ($a !== null && isset($a['costo_total'])) {
-                    $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> S/. ' . number_format($a['costo_total'], 2, '.', ',') . '</p>';
-                } else {
-                    $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> Data not available</p>';
-                }
+            $db = \Config\Database::connect();
 
-                $p_restante = '<p class="mb-4"><b>PRESUPUESTO RESTANTE:</b> S/.</p>';
+            // Calculate the sum of the total field of the tables
+            $sumQuery = $db->query("
+                SELECT 
+                COALESCE((SELECT SUM(total) FROM op_gastos_indirectos WHERE op_id = ?), 0) + 
+                COALESCE((SELECT SUM(total) FROM op_mano_obra WHERE op_id = ?), 0) +
+                COALESCE((SELECT SUM(total) FROM op_materiales WHERE op_id = ?), 0) AS total_sum
+                ",
+                [$segment2, $segment2, $segment2]
+            );
 
-                switch ($segment1) {
-                    case 'op_mano_obra':
-                        // Code to be executed if $segment is 'value1'
-                        echo '<h2 class="mb-2 d-inline-block pe-2">OP 0' . $segment2 . ': MANO DE OBRA</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';                        
-                        echo $p_total;
-                        echo $p_restante;
-                        echo $output;
-                        echo $regresar;
-                        break;
-                    case 'op_materiales':
-                        // Code to be executed if $segment is 'value2'
-                        echo '<h2 class="mb-4 d-inline-block pe-2">OP 0' . $segment2 . ': MATERIALES</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
-                        echo $p_total;
-                        echo $p_restante;
-                        echo $output;
-                        echo $regresar;
-                        break;
-                    case 'op_gastos_indirectos':
-                        // Code to be executed if $segment is 'value2'
-                        echo '<h2 class="mb-4 d-inline-block pe-2">OP 0' . $segment2 . ': GASTOS INDIRECTOS</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
-                        echo $p_total;
-                        echo $p_restante;
-                        echo $output;
-                        echo $regresar;
-                        break;
-                    case 'op':
-                        echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE OPs</h2>';
-                        echo $output;
-                        break;
-                    case 'users':
-                        echo '<h2 class="mb-4 d-inline-block pe-2">USUARIOS DEL SISTEMA</h2>';
-                        echo $output;
-                        break;
-                    case 'roles':
-                        echo '<h2 class="mb-4 d-inline-block pe-2">ROLES DE USUARIOS</h2>';
-                        echo $output;
-                        break;
-                    case 'clientes':
-                        echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE CLIENTES</h2>';
-                        echo $output;
-                        break;
-                    case 'empleados':
-                        echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE EMPLEADOS</h2>';
-                        echo $output;
-                        break;
-                    case 'estados':
-                        echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE ESTADOS DE OP</h2>';
-                        echo $output;
-                        break;
-                    default:
-                        // Code to be executed if $segment is different from all labels
-                        echo $output;
-                        break;
-                }
+            $sumResult = $sumQuery->getRowArray();
+
+            $totalSum = $sumResult['total_sum'];
+
+            // Get the costo_total field of the op table
+            $costoQuery = $db->query("SELECT costo_total FROM op WHERE id = ?", $segment2);
+            $costoResult = $costoQuery->getRowArray();
+            if ($costoResult !== null && isset($costoResult['costo_total'])) {
+                $costoTotal = $costoResult['costo_total'];
+                // Subtract the costo_total from the total sum
+                $result = $costoTotal - $totalSum;
+            } else {
+                $result = "Data not available";
+            }
+
+            if ($costoResult !== null && isset($costoTotal)) {
+                $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> S/. ' . number_format($costoTotal, 2, '.', ',') . '</p>';
+                $p_restante = '<p class="mb-4"><b>PRESUPUESTO RESTANTE:</b> S/. ' . number_format($result, 2, '.', ',') . '</p>';
+            } else {
+                $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> Data not available</p>';
+                $p_restante = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> Data not available</p>';
+            }
+
+            switch ($segment1) {
+                case 'op_mano_obra':
+                    // Code to be executed if $segment is 'value1'
+                    echo '<h2 class="mb-2 d-inline-block pe-2">OP 0' . $segment2 . ': MANO DE OBRA</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                    echo $p_total;
+                    echo $p_restante;
+                    echo $output;
+                    echo $regresar;
+                    break;
+                case 'op_materiales':
+                    // Code to be executed if $segment is 'value2'
+                    echo '<h2 class="mb-4 d-inline-block pe-2">OP 0' . $segment2 . ': MATERIALES</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                    echo $p_total;
+                    echo $p_restante;
+                    echo $output;
+                    echo $regresar;
+                    break;
+                case 'op_gastos_indirectos':
+                    // Code to be executed if $segment is 'value2'
+                    echo '<h2 class="mb-4 d-inline-block pe-2">OP 0' . $segment2 . ': GASTOS INDIRECTOS</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
+                    echo $p_total;
+                    echo $p_restante;
+                    echo $output;
+                    echo $regresar;
+                    break;
+                case 'op':
+                    echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE OPs</h2>';
+                    echo $output;
+                    break;
+                case 'users':
+                    echo '<h2 class="mb-4 d-inline-block pe-2">USUARIOS DEL SISTEMA</h2>';
+                    echo $output;
+                    break;
+                case 'roles':
+                    echo '<h2 class="mb-4 d-inline-block pe-2">ROLES DE USUARIOS</h2>';
+                    echo $output;
+                    break;
+                case 'clientes':
+                    echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE CLIENTES</h2>';
+                    echo $output;
+                    break;
+                case 'empleados':
+                    echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE EMPLEADOS</h2>';
+                    echo $output;
+                    break;
+                case 'estados':
+                    echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE ESTADOS DE OP</h2>';
+                    echo $output;
+                    break;
+                default:
+                    // Code to be executed if $segment is different from all labels
+                    echo $output;
+                    break;
+            }
             ?>
         </div>
     </main>
