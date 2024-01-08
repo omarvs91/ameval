@@ -203,9 +203,24 @@ class Home extends BaseController
             'horas_trabajadas' => 'HORAS HOMBRE',
             'cantidad' => 'CANTIDAD DE PERSONAL',
             'valor_x_hora' => 'VALOR POR HORA',            
-            'total' => 'TOTAL'
+            'total' => 'TOTAL',
+            'comprobante' => 'COMPROBANTE'
         ]);
-        $crud->columns(['empleado_id', 'horas_trabajadas', 'valor_x_hora', 'cantidad', 'total']);
+        $crud->columns(['comprobante','empleado_id', 'horas_trabajadas', 'valor_x_hora', 'cantidad', 'total']);
+
+        $crud->fieldTypeColumn('comprobante', 'varchar');
+
+        $crud->mapColumn('comprobante', 'op_id');
+
+        $db = \Config\Database::connect();
+
+        $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {            
+            $q = $db->query("SELECT cod_comprobante FROM op WHERE id = ?", $value);
+            $a = $q->getRowArray();
+            $cod_comprobante = $a['cod_comprobante'];
+            return $cod_comprobante;
+        });
+
         $crud->addFields(['empleado_id', 'cantidad', 'horas_trabajadas']);
         $crud->editFields(['empleado_id', 'cantidad', 'horas_trabajadas']);
 
@@ -294,8 +309,24 @@ class Home extends BaseController
             'cantidad' => 'CANTIDAD',
             'precio_uni' => 'PRECIO UNITARIO',
             'total' => 'TOTAL',
-            'op_id' => 'OP'
+            'op_id' => 'OP',
+            'comprobante' => 'COMPROBANTE'
         ]);
+
+        $crud->columns(['comprobante', 'material', 'cantidad', 'precio_uni', 'total']);
+
+        $crud->fieldTypeColumn('comprobante', 'varchar');
+
+        $crud->mapColumn('comprobante', 'op_id');
+
+        $db = \Config\Database::connect();
+
+        $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {            
+            $q = $db->query("SELECT cod_comprobante FROM op WHERE id = ?", $value);
+            $a = $q->getRowArray();
+            $cod_comprobante = $a['cod_comprobante'];
+            return $cod_comprobante;
+        });
 
         // Get the URL path and explode it to extract segments
         $uri = service('uri');
@@ -327,10 +358,24 @@ class Home extends BaseController
             'horas_trabajadas' => 'HORAS USADAS',
             'valor_x_hora' => 'PRECIO POR HORA (S/.)',
             'op_id' => 'OP',
-            'total' => 'TOTAL'
+            'total' => 'TOTAL',
+            'comprobante' => 'COMPROBANTE'
         ]);
 
-        $crud->columns(['op_id', 'gasto_indirecto','horas_trabajadas', 'valor_x_hora', 'total']);
+        $crud->columns(['comprobante', 'gasto_indirecto','horas_trabajadas', 'valor_x_hora', 'total']);
+
+        $crud->fieldTypeColumn('comprobante', 'varchar');
+
+        $crud->mapColumn('comprobante', 'op_id');
+
+        $db = \Config\Database::connect();
+
+        $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {            
+            $q = $db->query("SELECT cod_comprobante FROM op WHERE id = ?", $value);
+            $a = $q->getRowArray();
+            $cod_comprobante = $a['cod_comprobante'];
+            return $cod_comprobante;
+        });
 
         $crud->addFields(['gasto_indirecto','horas_trabajadas','valor_x_hora']);
 
