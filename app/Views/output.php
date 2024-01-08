@@ -106,6 +106,26 @@
                         echo '<h2 class="mb-5 d-inline-block pe-2">LISTA DE OPs</h2>';
                         echo $output;
                         break;
+                    case 'users':
+                        echo '<h2 class="mb-5 d-inline-block pe-2">USUARIOS DEL SISTEMA</h2>';
+                        echo $output;
+                        break;
+                    case 'roles':
+                        echo '<h2 class="mb-5 d-inline-block pe-2">ROLES DE USUARIOS</h2>';
+                        echo $output;
+                        break;
+                    case 'clientes':
+                        echo '<h2 class="mb-5 d-inline-block pe-2">LISTA DE CLIENTES</h2>';
+                        echo $output;
+                        break;
+                    case 'empleados':
+                        echo '<h2 class="mb-5 d-inline-block pe-2">LISTA DE EMPLEADOS</h2>';
+                        echo $output;
+                        break;
+                    case 'estados':
+                        echo '<h2 class="mb-5 d-inline-block pe-2">LISTA DE ESTADOS DE OP</h2>';
+                        echo $output;
+                        break;
                     default:
                         // Code to be executed if $segment is different from all labels
                         echo $output;
