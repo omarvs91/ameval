@@ -92,13 +92,13 @@
                         break;
                     case 'op_materiales':
                         // Code to be executed if $segment is 'value2'
-                        echo '<h2 class="mb-5">OP 0' . $uri->getSegment(2) . ': MATERIALES</h2><span><a class="regresar" href="' . base_url() . 'op">REGRESAR</a></span>';
+                        echo '<h2 class="mb-5 d-inline-block pe-2">OP 0' . $uri->getSegment(2) . ': MATERIALES</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
                         echo $output;
                         echo $regresar;
                         break;
                     case 'op_gastos_indirectos':
                         // Code to be executed if $segment is 'value2'
-                        echo '<h2 class="mb-5">OP 0' . $uri->getSegment(2) . ': GASTOS INDIRECTOS</h2><span><a class="regresar" href="' . base_url() . 'op">REGRESAR</a></span>';
+                        echo '<h2 class="mb-5 d-inline-block pe-2">OP 0' . $uri->getSegment(2) . ': GASTOS INDIRECTOS</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
                         echo $output;
                         echo $regresar;
                         break;
