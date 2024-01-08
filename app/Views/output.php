@@ -87,7 +87,11 @@
                 $db = \Config\Database::connect();
                 $q = $db->query("SELECT costo_total FROM op WHERE id = ?", $segment2);
                 $a = $q->getRowArray();
-                $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> S/. ' . number_format($a['costo_total'], 2, '.', ',') . '</p>';
+                if ($a !== null && isset($a['costo_total'])) {
+                    $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> S/. ' . number_format($a['costo_total'], 2, '.', ',') . '</p>';
+                } else {
+                    $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> Data not available</p>';
+                }
 
                 $p_restante = '<p class="mb-5"><b>PRESUPUESTO RESTANTE:</b> S/.</p>';
 
