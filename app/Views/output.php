@@ -87,7 +87,7 @@
                 $db = \Config\Database::connect();
                 $q = $db->query("SELECT costo_total FROM op WHERE id = ?", $segment2);
                 $a = $q->getRowArray();
-                $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> S/. ' . $a['costo_total'] . '</p>';
+                $p_total = '<p class="mb-2"><b>PRESUPUESTO TOTAL DE OP:</b> S/. ' . number_format($a['costo_total'], 2, '.', ',') . '</p>';
 
                 $p_restante = '<p class="mb-5"><b>PRESUPUESTO RESTANTE:</b> S/.</p>';
 
