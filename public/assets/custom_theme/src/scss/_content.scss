@@ -17,6 +17,7 @@ main {
     color: $white;
     transition: $transition;
     &:hover {
+        color: $white;
         text-decoration: underline;
         transition: $transition;
     }

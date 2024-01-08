@@ -40018,6 +40018,7 @@ main {
   transition: all 0.3s ease-in-out;
 }
 .regresar:hover {
+  color: #fff;
   text-decoration: underline;
   transition: all 0.3s ease-in-out;
 }
