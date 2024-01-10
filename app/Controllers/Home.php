@@ -83,7 +83,7 @@ class Home extends BaseController
             "T" => "TOTALMENTE PAGADO"
         ]);
 
-        $crud->columns(['cod_op', 'cod_comprobante', 'estado_op_id', 'abonado', 'costo_total']);
+        $crud->columns(['id', 'cod_op', 'cod_comprobante', 'estado_op_id', 'abonado', 'costo_total', 'presupuesto_restante']);
 
         $crud->readFields(['cod_op', 'cod_comprobante', 'cliente_id', 'descripcion', 'estado_op_id', 'abonado', 'costo_total', 'registered_by_user_id', 'last_updated_by_user_id', 'fecha_creacion', 'fecha_actualizacion', 'observacion']);
 
@@ -108,8 +108,39 @@ class Home extends BaseController
             'tipo' => 'SERVICIO / FABRICACION',
             'estado_pago' => 'ESTADO DE PAGO',
             'fecha_inicio' => 'FECHA DE INICIO',
-            'fecha_entrega' => 'FECHA DE ENTREGA'
+            'fecha_entrega' => 'FECHA DE ENTREGA',
+            'presupuesto_restante' => 'PRESUPUESTO RESTANTE'
         ]);
+
+        $crud->mapColumn('presupuesto_restante', 'id');
+
+        $crud->fieldTypeColumn('id', 'invisible');
+
+        $db = \Config\Database::connect();
+
+        $crud->callbackColumn('presupuesto_restante', function ($value, $row) use ($db) {
+            $sumQuery = $db->query("
+                SELECT 
+                COALESCE((SELECT SUM(total) FROM op_gastos_indirectos WHERE op_id = ?), 0) + 
+                COALESCE((SELECT SUM(total) FROM op_mano_obra WHERE op_id = ?), 0) +
+                COALESCE((SELECT SUM(total) FROM op_materiales WHERE op_id = ?), 0) AS total_sum
+                ",
+                [$value, $value, $value]
+            );
+
+            $sumResult = $sumQuery->getRowArray();
+
+            $totalSum = $sumResult['total_sum'];
+
+            // Get the costo_total field of the op table
+            $costoQuery = $db->query("SELECT costo_total FROM op WHERE id = ?", $value);
+            $costoResult = $costoQuery->getRowArray();
+            $costoTotal = $costoResult['costo_total'];
+
+            // Subtract the costo_total from the total sum
+            $result = $costoTotal - $totalSum;
+            return number_format($result, 2, '.', ',');
+        });
 
         $crud->setTexteditor(['descripcion']);
 
@@ -202,11 +233,11 @@ class Home extends BaseController
             'empleado_id' => 'TIPO DE EMPLEADO',
             'horas_trabajadas' => 'HORAS HOMBRE',
             'cantidad' => 'CANTIDAD DE PERSONAL',
-            'valor_x_hora' => 'VALOR POR HORA',            
+            'valor_x_hora' => 'VALOR POR HORA',
             'total' => 'TOTAL',
             'comprobante' => 'COMPROBANTE'
         ]);
-        $crud->columns(['comprobante','empleado_id', 'horas_trabajadas', 'valor_x_hora', 'cantidad', 'total']);
+        $crud->columns(['comprobante', 'empleado_id', 'horas_trabajadas', 'valor_x_hora', 'cantidad', 'total']);
 
         $crud->fieldTypeColumn('comprobante', 'varchar');
 
@@ -214,7 +245,7 @@ class Home extends BaseController
 
         $db = \Config\Database::connect();
 
-        $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {            
+        $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {
             $q = $db->query("SELECT cod_comprobante FROM op WHERE id = ?", $value);
             $a = $q->getRowArray();
             $cod_comprobante = $a['cod_comprobante'];
@@ -238,8 +269,6 @@ class Home extends BaseController
         $crud->where([
             'op_mano_obra.op_id' => $segment
         ]);
-
-        $db = \Config\Database::connect();
 
         $crud->callbackAfterInsert(function ($stateParameters) use ($db) {
             // Extract necessary data from $stateParameters
@@ -282,7 +311,7 @@ class Home extends BaseController
             $valor_x_hora = $tbl_empleados['valor_x_hora'];
             $total = $valor_x_hora * $stateParameters->data['horas_trabajadas'] * $stateParameters->data['cantidad'];
             $stateParameters->data['total'] = number_format($total, 2, '.', '');
-        
+
             return $stateParameters;
         });
 
@@ -315,7 +344,7 @@ class Home extends BaseController
 
         $db = \Config\Database::connect();
 
-        $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {            
+        $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {
             $q = $db->query("SELECT cod_comprobante FROM op WHERE id = ?", $value);
             $a = $q->getRowArray();
             $cod_comprobante = $a['cod_comprobante'];
@@ -356,7 +385,7 @@ class Home extends BaseController
             'comprobante' => 'COMPROBANTE'
         ]);
 
-        $crud->columns(['comprobante', 'gasto_indirecto','horas_trabajadas', 'valor_x_hora', 'total']);
+        $crud->columns(['comprobante', 'gasto_indirecto', 'horas_trabajadas', 'valor_x_hora', 'total']);
 
         $crud->fieldTypeColumn('comprobante', 'varchar');
 
@@ -364,14 +393,14 @@ class Home extends BaseController
 
         $db = \Config\Database::connect();
 
-        $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {            
+        $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {
             $q = $db->query("SELECT cod_comprobante FROM op WHERE id = ?", $value);
             $a = $q->getRowArray();
             $cod_comprobante = $a['cod_comprobante'];
             return $cod_comprobante;
         });
 
-        $crud->addFields(['gasto_indirecto','horas_trabajadas','valor_x_hora']);
+        $crud->addFields(['gasto_indirecto', 'horas_trabajadas', 'valor_x_hora']);
 
         $crud->fieldType('valor_x_hora', 'float');
 
