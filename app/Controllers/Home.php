@@ -83,7 +83,7 @@ class Home extends BaseController
             "T" => "TOTALMENTE PAGADO"
         ]);
 
-        $crud->columns(['id', 'cod_op', 'cod_comprobante', 'estado_op_id', 'abonado', 'costo_total', 'presupuesto_restante']);
+        $crud->columns(['id', 'cod_op', 'cod_comprobante', 'cliente_id', 'estado_op_id', 'abonado', 'costo_total', 'presupuesto_restante']);
 
         $crud->readFields(['cod_op', 'cod_comprobante', 'cliente_id', 'descripcion', 'estado_op_id', 'abonado', 'costo_total', 'registered_by_user_id', 'last_updated_by_user_id', 'fecha_creacion', 'fecha_actualizacion', 'observacion']);
 
