@@ -64,13 +64,13 @@ $breakpoints: (
 // GC ACTIONS DROPDOWN FIX
 // Use a parent selector for efficiency
 // Mixin to generate individual styles
-@mixin generate-dropdown-styles($index) {  
-  .gc-datagrid-#{$index} {
-    overflow-x: unset!important;
-  }
-}
+//@mixin generate-dropdown-styles($index) {  
+//  .gc-datagrid-#{$index} {
+//    overflow-x: unset!important;
+//  }
+//}
 
 // Loop through 1 to 9999 and call the mixin
-@for $i from 1 through 9999 {
-  @include generate-dropdown-styles($i);
-}
+//@for $i from 1 through 9999 {
+//  @include generate-dropdown-styles($i);
+//}
