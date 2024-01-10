@@ -81,6 +81,7 @@
         <div class="container mt-5 mb-5">
             <?php
             $uri = service('uri');
+            $uri->setSilent();
             $segment1 = $uri->getSegment(1);
             $segment2 = $uri->getSegment(2);
             $regresar = '<h4 class="mt-5 text-center"><a class="regresar" href="' . base_url() . 'op">REGRESAR</a></h4>';

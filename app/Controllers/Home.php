@@ -288,12 +288,6 @@ class Home extends BaseController
 
         // Render the CRUD
         $output = $crud->render();
-        
-        /*$js_files = $output->js_files;
-        $output = $output->output;
-        $title = 'OP 0' . $uri->getSegment(2) . ': MANO DE OBRA';
-
-        return $this->_mainOutput(['output' => $output, 'title' => $title, 'js_files' => $js_files]);*/
 
         return $this->_mainOutput($output);
     }
