@@ -364,7 +364,7 @@ class Home extends BaseController
             return $stateParameters;
         });
 
-        $crud->callbackBeforeUpdate(function ($stateParameters) use ($db) {
+        $crud->callbackBeforeUpdate(function ($stateParameters) {
             $total = $stateParameters->data['precio_uni'] * $stateParameters->data['cantidad'];
             $formattedTotal = number_format($total, 2, '.', '');
             $stateParameters->data['total'] = $formattedTotal;
@@ -410,6 +410,9 @@ class Home extends BaseController
 
         $db = \Config\Database::connect();
 
+        $uri = service('uri');
+        $segment2 = $uri->getSegment(2) ?? null;
+
         $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {
             $q = $db->query("SELECT cod_comprobante FROM op WHERE id = ?", $value);
             $a = $q->getRowArray();
@@ -419,22 +422,34 @@ class Home extends BaseController
 
         $crud->addFields(['gasto_indirecto', 'horas_trabajadas', 'valor_x_hora']);
 
+        $crud->editFields(['gasto_indirecto', 'horas_trabajadas', 'valor_x_hora']);
+
         $crud->fieldType('valor_x_hora', 'float');
 
-        // Get the URL path and explode it to extract segments
-        $uri = service('uri');
-        $path = $uri->getPath();
-        $segments = explode('/', $path);
-
-        // Find the index of "op_gastos_indirectos" in segments array
-        $op_gastos_indirectos_index = array_search('op_gastos_indirectos', $segments);
-
-        // Extract the segment after "op_mano_obra"
-        $segment = $segments[$op_gastos_indirectos_index + 1] ?? null;
-
         $crud->where([
-            'op_gastos_indirectos.op_id' => $segment
+            'op_gastos_indirectos.op_id' => $segment2
         ]);
+
+        $crud->callbackAfterInsert(function ($stateParameters) use ($db, $segment2) {
+            // Calculate total based on precio_uni and cantidad
+            $total = $stateParameters->data['horas_trabajadas'] * $stateParameters->data['valor_x_hora'];
+            $formattedTotal = number_format($total, 2, '.', '');
+
+            // If a valid segment is found, update the database
+            if ($segment2 !== null && is_numeric($segment2)) {
+                $db->query("UPDATE op_gastos_indirectos SET op_id = ?, total = ? WHERE id = ?", [$segment2, $formattedTotal, $stateParameters->insertId]);
+            }
+
+            return $stateParameters;
+        });
+
+        $crud->callbackBeforeUpdate(function ($stateParameters) {
+            $total = $stateParameters->data['horas_trabajadas'] * $stateParameters->data['valor_x_hora'];
+            $formattedTotal = number_format($total, 2, '.', '');
+            $stateParameters->data['total'] = $formattedTotal;
+
+            return $stateParameters;
+        });
 
         // Render the CRUD
         $output = $crud->render();
