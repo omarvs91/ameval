@@ -338,11 +338,39 @@ class Home extends BaseController
 
         $crud->columns(['comprobante', 'material', 'cantidad', 'precio_uni', 'total']);
 
+        $crud->addFields(['material', 'cantidad', 'precio_uni']);
+
+        $crud->editFields(['material', 'cantidad', 'precio_uni']);
+
         $crud->fieldTypeColumn('comprobante', 'varchar');
 
         $crud->mapColumn('comprobante', 'op_id');
 
         $db = \Config\Database::connect();
+
+        $uri = service('uri');
+        $segment2 = $uri->getSegment(2) ?? null;
+
+        $crud->callbackAfterInsert(function ($stateParameters) use ($db, $segment2) {
+            // Calculate total based on precio_uni and cantidad
+            $total = $stateParameters->data['precio_uni'] * $stateParameters->data['cantidad'];
+            $formattedTotal = number_format($total, 2, '.', '');
+
+            // If a valid segment is found, update the database
+            if ($segment2 !== null && is_numeric($segment2)) {
+                $db->query("UPDATE op_materiales SET op_id = ?, total = ? WHERE id = ?", [$segment2, $formattedTotal, $stateParameters->insertId]);
+            }
+
+            return $stateParameters;
+        });
+
+        $crud->callbackBeforeUpdate(function ($stateParameters) use ($db) {
+            $total = $stateParameters->data['precio_uni'] * $stateParameters->data['cantidad'];
+            $formattedTotal = number_format($total, 2, '.', '');
+            $stateParameters->data['total'] = $formattedTotal;
+
+            return $stateParameters;
+        });
 
         $crud->callbackColumn('comprobante', function ($value, $row) use ($db) {
             $q = $db->query("SELECT cod_comprobante FROM op WHERE id = ?", $value);
@@ -351,19 +379,8 @@ class Home extends BaseController
             return $cod_comprobante;
         });
 
-        // Get the URL path and explode it to extract segments
-        $uri = service('uri');
-        $path = $uri->getPath();
-        $segments = explode('/', $path);
-
-        // Find the index of "op_gastos_indirectos" in segments array
-        $op_materiales_index = array_search('op_materiales', $segments);
-
-        // Extract the segment after "op_mano_obra"
-        $segment = $segments[$op_materiales_index + 1] ?? null;
-
         $crud->where([
-            'op_materiales.op_id' => $segment
+            'op_materiales.op_id' => $segment2
         ]);
 
         // Render the CRUD
