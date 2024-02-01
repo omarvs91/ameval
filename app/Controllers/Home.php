@@ -392,14 +392,13 @@ class Home extends BaseController
         $crud->setSubject('GASTO INDIRECTO');
         $crud->displayAs([
             'gasto_indirecto' => 'GASTO INDIRECTO',
-            'horas_trabajadas' => 'HORAS USADAS',
-            'valor_x_hora' => 'PRECIO POR HORA (S/.)',
+            'valor_x_hora' => 'PRECIO',
             'op_id' => 'OP',
             'total' => 'TOTAL',
             'comprobante' => 'COMPROBANTE'
         ]);
 
-        $crud->columns(['comprobante', 'gasto_indirecto', 'horas_trabajadas', 'valor_x_hora', 'total']);
+        $crud->columns(['comprobante', 'gasto_indirecto', 'valor_x_hora', 'total']);
 
         $crud->fieldTypeColumn('comprobante', 'varchar');
 
@@ -417,9 +416,9 @@ class Home extends BaseController
             return $cod_comprobante;
         });
 
-        $crud->addFields(['gasto_indirecto', 'horas_trabajadas', 'valor_x_hora']);
+        $crud->addFields(['gasto_indirecto', 'valor_x_hora']);
 
-        $crud->editFields(['gasto_indirecto', 'horas_trabajadas', 'valor_x_hora']);
+        $crud->editFields(['gasto_indirecto', 'valor_x_hora']);
 
         $crud->fieldType('valor_x_hora', 'float');
 
@@ -429,7 +428,7 @@ class Home extends BaseController
 
         $crud->callbackAfterInsert(function ($stateParameters) use ($db, $segment2) {
             // Calculate total based on precio_uni and cantidad
-            $total = $stateParameters->data['horas_trabajadas'] * $stateParameters->data['valor_x_hora'];
+            $total = $stateParameters->data['valor_x_hora'];
             $formattedTotal = number_format($total, 2, '.', '');
 
             // If a valid segment is found, update the database
@@ -441,7 +440,7 @@ class Home extends BaseController
         });
 
         $crud->callbackBeforeUpdate(function ($stateParameters) {
-            $total = $stateParameters->data['horas_trabajadas'] * $stateParameters->data['valor_x_hora'];
+            $total = $stateParameters->data['valor_x_hora'];
             $formattedTotal = number_format($total, 2, '.', '');
             $stateParameters->data['total'] = $formattedTotal;
 
