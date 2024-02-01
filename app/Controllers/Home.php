@@ -232,8 +232,12 @@ class Home extends BaseController
             'cantidad' => 'CANTIDAD DE PERSONAL',
             'valor_x_hora' => 'VALOR POR HORA',
             'total' => 'TOTAL',
-            'comprobante' => 'COMPROBANTE'
+            'comprobante' => 'COMPROBANTE',
+            'file_url' => 'SUBIR BOLETA/FACTURA'
         ]);
+
+        $crud->setFieldUpload('file_url', 'assets/uploads/files', base_url() . '/assets/uploads/files');
+
         $crud->columns(['comprobante', 'empleado_id', 'horas_trabajadas', 'valor_x_hora', 'cantidad', 'total']);
 
         $crud->fieldTypeColumn('comprobante', 'varchar');
@@ -249,8 +253,8 @@ class Home extends BaseController
             return $cod_comprobante;
         });
 
-        $crud->addFields(['empleado_id', 'cantidad', 'horas_trabajadas']);
-        $crud->editFields(['empleado_id', 'cantidad', 'horas_trabajadas']);
+        $crud->addFields(['empleado_id', 'cantidad', 'horas_trabajadas', 'file_url']);
+        $crud->editFields(['empleado_id', 'cantidad', 'horas_trabajadas', 'file_url']);
 
         // Get the URL path and explode it to extract segments
         $uri = service('uri');
@@ -330,14 +334,17 @@ class Home extends BaseController
             'precio_uni' => 'PRECIO UNITARIO',
             'total' => 'TOTAL',
             'op_id' => 'OP',
-            'comprobante' => 'COMPROBANTE'
+            'comprobante' => 'COMPROBANTE',
+            'file_url' => 'SUBIR BOLETA/FACTURA'
         ]);
+
+        $crud->setFieldUpload('file_url', 'assets/uploads/files', base_url() . '/assets/uploads/files');
 
         $crud->columns(['comprobante', 'material', 'cantidad', 'precio_uni', 'total']);
 
-        $crud->addFields(['material', 'cantidad', 'precio_uni']);
+        $crud->addFields(['material', 'cantidad', 'precio_uni', 'file_url']);
 
-        $crud->editFields(['material', 'cantidad', 'precio_uni']);
+        $crud->editFields(['material', 'cantidad', 'precio_uni', 'file_url']);
 
         $crud->fieldTypeColumn('comprobante', 'varchar');
 
@@ -395,8 +402,11 @@ class Home extends BaseController
             'valor_x_hora' => 'PRECIO',
             'op_id' => 'OP',
             'total' => 'TOTAL',
-            'comprobante' => 'COMPROBANTE'
+            'comprobante' => 'COMPROBANTE',
+            'file_url' => 'SUBIR BOLETA/FACTURA'
         ]);
+
+        $crud->setFieldUpload('file_url', 'assets/uploads/files', base_url() . 'assets/uploads/files/');
 
         $crud->columns(['comprobante', 'gasto_indirecto', 'valor_x_hora', 'total']);
 
@@ -416,9 +426,9 @@ class Home extends BaseController
             return $cod_comprobante;
         });
 
-        $crud->addFields(['gasto_indirecto', 'valor_x_hora']);
+        $crud->addFields(['gasto_indirecto', 'valor_x_hora', 'file_url']);
 
-        $crud->editFields(['gasto_indirecto', 'valor_x_hora']);
+        $crud->editFields(['gasto_indirecto', 'valor_x_hora', 'file_url']);
 
         $crud->fieldType('valor_x_hora', 'float');
 
