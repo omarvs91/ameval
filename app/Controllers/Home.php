@@ -62,8 +62,6 @@ class Home extends BaseController
 
         $crud->setRelation('cliente_id', 'clientes', 'nombres');
 
-        $crud->setRelation('estado_op_id', 'estados_op', 'nom_estado_op');
-
         $crud->setRelation('registered_by_user_id', 'users', 'username');
 
         $crud->setRelation('last_updated_by_user_id', 'users', 'username');
@@ -83,13 +81,13 @@ class Home extends BaseController
             "T" => "TOTALMENTE PAGADO"
         ]);
 
-        $crud->columns(['id', 'cod_op', 'cod_comprobante', 'cliente_id', 'estado_op_id', 'abonado', 'costo_total', 'presupuesto_restante']);
+        $crud->columns(['id', 'cod_op', 'cod_comprobante', 'cliente_id', 'abonado', 'costo_total', 'presupuesto_restante']);
 
-        $crud->readFields(['cod_op', 'cod_comprobante', 'cliente_id', 'descripcion', 'estado_op_id', 'abonado', 'costo_total', 'registered_by_user_id', 'last_updated_by_user_id', 'fecha_creacion', 'fecha_actualizacion', 'observacion']);
+        $crud->readFields(['cod_op', 'cod_comprobante', 'cliente_id', 'descripcion', 'abonado', 'costo_total', 'registered_by_user_id', 'last_updated_by_user_id', 'fecha_creacion', 'fecha_actualizacion', 'observacion']);
 
         $crud->addFields(['cliente_id', 'tipo', 'tipo_comprobante', 'descripcion', 'estado_pago', 'costo_total', 'abonado', 'observacion']);
 
-        $crud->editFields(['descripcion', 'estado_op_id', 'fecha_inicio', 'fecha_entrega', 'observacion']);
+        $crud->editFields(['descripcion', 'fecha_inicio', 'fecha_entrega', 'observacion']);
 
         $crud->displayAs([
             'cod_op' => 'OP',
@@ -104,7 +102,6 @@ class Home extends BaseController
             'last_updated_by_user_id' => 'ÚLTIMA ACTUALIZACIÓN POR',
             'costo_total' => 'COSTO TOTAL (S/.)',
             'abonado' => 'ABONADO (S/.)',
-            'estado_op_id' => 'ESTADO',
             'tipo' => 'SERVICIO / FABRICACION',
             'estado_pago' => 'ESTADO DE PAGO',
             'fecha_inicio' => 'FECHA DE INICIO',
