@@ -332,16 +332,17 @@ class Home extends BaseController
             'total' => 'TOTAL',
             'op_id' => 'OP',
             'comprobante' => 'COMPROBANTE',
-            'file_url' => 'SUBIR BOLETA/FACTURA'
+            'file_url' => 'SUBIR BOLETA/FACTURA',
+            'num_factura' => 'N° FACTURA'
         ]);
 
-        $crud->setFieldUpload('file_url', 'assets/uploads/files', base_url() . '/assets/uploads/files');
+        $crud->setFieldUpload('file_url', 'assets/uploads/files', base_url() . 'assets/uploads/files/');
 
-        $crud->columns(['comprobante', 'material', 'cantidad', 'precio_uni', 'total']);
+        $crud->columns(['num_factura', 'comprobante', 'material', 'cantidad', 'precio_uni', 'total']);
 
-        $crud->addFields(['material', 'cantidad', 'precio_uni', 'file_url']);
+        $crud->addFields(['num_factura', 'material', 'cantidad', 'precio_uni', 'file_url']);
 
-        $crud->editFields(['material', 'cantidad', 'precio_uni', 'file_url']);
+        $crud->editFields(['num_factura', 'material', 'cantidad', 'precio_uni', 'file_url']);
 
         $crud->fieldTypeColumn('comprobante', 'varchar');
 
@@ -400,12 +401,13 @@ class Home extends BaseController
             'op_id' => 'OP',
             'total' => 'TOTAL',
             'comprobante' => 'COMPROBANTE',
-            'file_url' => 'SUBIR BOLETA/FACTURA'
+            'file_url' => 'SUBIR BOLETA/FACTURA',
+            'num_factura' => 'N° FACTURA'
         ]);
 
         $crud->setFieldUpload('file_url', 'assets/uploads/files', base_url() . 'assets/uploads/files/');
 
-        $crud->columns(['comprobante', 'gasto_indirecto', 'valor_x_hora', 'total']);
+        $crud->columns(['num_factura', 'comprobante', 'gasto_indirecto', 'valor_x_hora', 'total']);
 
         $crud->fieldTypeColumn('comprobante', 'varchar');
 
@@ -423,9 +425,9 @@ class Home extends BaseController
             return $cod_comprobante;
         });
 
-        $crud->addFields(['gasto_indirecto', 'valor_x_hora', 'file_url']);
+        $crud->addFields(['num_factura', 'gasto_indirecto', 'valor_x_hora', 'file_url']);
 
-        $crud->editFields(['gasto_indirecto', 'valor_x_hora', 'file_url']);
+        $crud->editFields(['num_factura', 'gasto_indirecto', 'valor_x_hora', 'file_url']);
 
         $crud->fieldType('valor_x_hora', 'float');
 
