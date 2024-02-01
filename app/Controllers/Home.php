@@ -232,11 +232,8 @@ class Home extends BaseController
             'cantidad' => 'CANTIDAD DE PERSONAL',
             'valor_x_hora' => 'VALOR POR HORA',
             'total' => 'TOTAL',
-            'comprobante' => 'COMPROBANTE',
-            'file_url' => 'SUBIR BOLETA/FACTURA'
+            'comprobante' => 'COMPROBANTE'
         ]);
-
-        $crud->setFieldUpload('file_url', 'assets/uploads/files', base_url() . '/assets/uploads/files');
 
         $crud->columns(['comprobante', 'empleado_id', 'horas_trabajadas', 'valor_x_hora', 'cantidad', 'total']);
 
@@ -253,8 +250,8 @@ class Home extends BaseController
             return $cod_comprobante;
         });
 
-        $crud->addFields(['empleado_id', 'cantidad', 'horas_trabajadas', 'file_url']);
-        $crud->editFields(['empleado_id', 'cantidad', 'horas_trabajadas', 'file_url']);
+        $crud->addFields(['empleado_id', 'cantidad', 'horas_trabajadas']);
+        $crud->editFields(['empleado_id', 'cantidad', 'horas_trabajadas']);
 
         // Get the URL path and explode it to extract segments
         $uri = service('uri');
