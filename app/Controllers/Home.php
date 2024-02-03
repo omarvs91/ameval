@@ -89,6 +89,7 @@ class Home extends BaseController
             'abonado',
             'costo_total',
             'presupuesto_restante',
+            'gasto_actual',
             'total_materiales',
             'total_mano_obra',
             'total_gastos_indirectos'
@@ -120,10 +121,12 @@ class Home extends BaseController
             'presupuesto_restante' => 'PRESUPUESTO RESTANTE',
             'total_materiales' => 'MATERIALES',
             'total_mano_obra' => 'MANO DE OBRA',
-            'total_gastos_indirectos' => 'GASTOS INDIRECTOS'
+            'total_gastos_indirectos' => 'GASTOS INDIRECTOS',
+            'gasto_actual' => 'GASTO ACTUAL'
         ]);
 
         $crud->mapColumn('presupuesto_restante', 'id');
+        $crud->mapColumn('gasto_actual', 'id');
         $crud->mapColumn('total_materiales', 'id');
         $crud->mapColumn('total_gastos_indirectos', 'id');
         $crud->mapColumn('total_mano_obra', 'id');
@@ -154,6 +157,19 @@ class Home extends BaseController
             // Subtract the costo_total from the total sum
             $result = $costoTotal - $totalSum;
             return number_format($result, 2, '.', ',');
+        });
+
+        $crud->callbackColumn('gasto_actual', function ($value, $row) use ($db) {
+            $sumQuery = $db->query("
+                SELECT
+                COALESCE((SELECT SUM(total) FROM op_gastos_indirectos WHERE op_id = ?), 0) +
+                COALESCE((SELECT SUM(total) FROM op_mano_obra WHERE op_id = ?), 0) +
+                COALESCE((SELECT SUM(total) FROM op_materiales WHERE op_id = ?), 0) AS total_sum
+                ",
+                [$value, $value, $value]
+            )->getRowArray()['total_sum'] ?? 0;
+            
+            return number_format($sumQuery, 2, '.', ',');
         });
 
         $crud->callbackColumn('total_materiales', function ($value, $row) use ($db) {
