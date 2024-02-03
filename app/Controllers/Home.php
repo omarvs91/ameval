@@ -81,7 +81,18 @@ class Home extends BaseController
             "T" => "TOTALMENTE PAGADO"
         ]);
 
-        $crud->columns(['id', 'cod_op', 'cod_comprobante', 'cliente_id', 'abonado', 'costo_total', 'presupuesto_restante']);
+        $crud->columns([
+            'id',
+            'cod_op',
+            'cod_comprobante',
+            'cliente_id',
+            'abonado',
+            'costo_total',
+            'presupuesto_restante',
+            'total_materiales',
+            'total_mano_obra',
+            'total_gastos_indirectos'
+        ]);
 
         $crud->readFields(['cod_op', 'cod_comprobante', 'cliente_id', 'descripcion', 'abonado', 'costo_total', 'registered_by_user_id', 'last_updated_by_user_id', 'fecha_creacion', 'fecha_actualizacion', 'observacion']);
 
@@ -106,10 +117,16 @@ class Home extends BaseController
             'estado_pago' => 'ESTADO DE PAGO',
             'fecha_inicio' => 'FECHA DE INICIO',
             'fecha_entrega' => 'FECHA DE ENTREGA',
-            'presupuesto_restante' => 'PRESUPUESTO RESTANTE'
+            'presupuesto_restante' => 'PRESUPUESTO RESTANTE',
+            'total_materiales' => 'MATERIALES',
+            'total_mano_obra' => 'MANO DE OBRA',
+            'total_gastos_indirectos' => 'GASTOS INDIRECTOS'
         ]);
 
         $crud->mapColumn('presupuesto_restante', 'id');
+        $crud->mapColumn('total_materiales', 'id');
+        $crud->mapColumn('total_gastos_indirectos', 'id');
+        $crud->mapColumn('total_mano_obra', 'id');
 
         $crud->fieldTypeColumn('id', 'invisible');
 
@@ -117,8 +134,8 @@ class Home extends BaseController
 
         $crud->callbackColumn('presupuesto_restante', function ($value, $row) use ($db) {
             $sumQuery = $db->query("
-                SELECT 
-                COALESCE((SELECT SUM(total) FROM op_gastos_indirectos WHERE op_id = ?), 0) + 
+                SELECT
+                COALESCE((SELECT SUM(total) FROM op_gastos_indirectos WHERE op_id = ?), 0) +
                 COALESCE((SELECT SUM(total) FROM op_mano_obra WHERE op_id = ?), 0) +
                 COALESCE((SELECT SUM(total) FROM op_materiales WHERE op_id = ?), 0) AS total_sum
                 ",
@@ -137,6 +154,35 @@ class Home extends BaseController
             // Subtract the costo_total from the total sum
             $result = $costoTotal - $totalSum;
             return number_format($result, 2, '.', ',');
+        });
+
+        $crud->callbackColumn('total_materiales', function ($value, $row) use ($db) {
+            $total = $db->query("SELECT total FROM op_materiales WHERE op_id = ?", $value);
+            $total = $total->getRowArray();
+            $total = $total['total'] ?? 0;
+            return number_format($total, 2, '.', ',');
+        });
+
+        $crud->callbackColumn('total_gastos_indirectos', function ($value, $row) use ($db) {
+            $total = $db->query("SELECT total FROM op_gastos_indirectos WHERE op_id = ?", $value);
+            $total = $total->getRowArray();
+            $total = $total['total'] ?? 0;
+            return number_format($total, 2, '.', ',');
+        });
+
+        $crud->callbackColumn('total_mano_obra', function ($value, $row) use ($db) {
+            $total = $db->query("SELECT total FROM op_mano_obra WHERE op_id = ?", $value);
+            $total = $total->getRowArray();
+            $total = $total['total'] ?? 0;
+            return number_format($total, 2, '.', ',');
+        });
+
+        $crud->callbackColumn('costo_total', function ($value, $row) {
+            return number_format($value, 2, '.', ',');
+        });
+
+        $crud->callbackColumn('abonado', function ($value, $row) {
+            return number_format($value, 2, '.', ',');
         });
 
         $crud->setTexteditor(['descripcion']);
