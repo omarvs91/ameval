@@ -522,20 +522,6 @@ class Home extends BaseController
         $output = $crud->render();
         return $this->_mainOutput($output);
     }
-    public function estados()
-    {
-        $crud = $this->_getGroceryCrudEnterprise();
-        $crud->setTable('estados_op');
-        $crud->setSkin('dark');
-        $crud->setSubject('ESTADO DE OP');
-        $crud->displayAs([
-            'nom_estado_op' => 'ESTADO DE OP',
-        ]);
-
-        // Render the CRUD
-        $output = $crud->render();
-        return $this->_mainOutput($output);
-    }
     public function getLastCodComprobante()
     {
         // Perform necessary database query to get the last cod_comprobante
