@@ -44,8 +44,6 @@
                             <li><a class="dropdown-item" href="<?= base_url() ?>clientes">CLIENTES</a></li>
 
                             <li><a class="dropdown-item" href="<?= base_url() ?>empleados">EMPLEADOS</a></li>
-
-                            <li><a class="dropdown-item" href="<?= base_url() ?>estados">ESTADOS DE OP</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown hover-dropdown">
@@ -164,10 +162,6 @@
                     break;
                 case 'empleados':
                     echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE EMPLEADOS</h2>';
-                    echo $output;
-                    break;
-                case 'estados':
-                    echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE ESTADOS DE OP</h2>';
                     echo $output;
                     break;
                 default:
