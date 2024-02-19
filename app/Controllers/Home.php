@@ -84,7 +84,7 @@ class Home extends BaseController
         $crud->columns([
             'id',
             'cod_op',
-            'cod_comprobante',
+            'fecha_creacion',
             'cliente_id',
             'abonado',
             'costo_total',
@@ -95,7 +95,7 @@ class Home extends BaseController
             'total_gastos_indirectos'
         ]);
 
-        $crud->readFields(['cod_op', 'cod_comprobante', 'cliente_id', 'descripcion', 'abonado', 'costo_total', 'registered_by_user_id', 'last_updated_by_user_id', 'fecha_creacion', 'fecha_actualizacion', 'observacion']);
+        $crud->readFields(['cod_op', 'fecha_creacion', 'cliente_id', 'descripcion', 'abonado', 'costo_total', 'registered_by_user_id', 'last_updated_by_user_id', 'fecha_creacion', 'fecha_actualizacion', 'observacion']);
 
         $crud->addFields(['cliente_id', 'tipo', 'tipo_comprobante', 'descripcion', 'estado_pago', 'costo_total', 'abonado', 'observacion']);
 
