@@ -66,6 +66,8 @@ class Home extends BaseController
 
         $crud->setRelation('last_updated_by_user_id', 'users', 'username');
 
+        $crud->unsetSearchColumns(['abonado','costo_total','presupuesto_restante','gasto_actual','total_materiales','total_mano_obra','total_gastos_indirectos']);
+
         $crud->fieldType('tipo_comprobante', 'dropdown_search', [
             "B" => "BOLETA",
             "F" => "FACTURA"

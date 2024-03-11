@@ -120,6 +120,7 @@
             }
 
             switch ($segment1) {
+                
                 case 'op_mano_obra':
                     // Code to be executed if $segment is 'value1'
                     echo '<h2 class="mb-2 d-inline-block pe-2">OP 0' . $segment2 . ': MANO DE OBRA</h2><span>(<a class="regresar" href="' . base_url() . 'op">REGRESAR</a>)</span>';
@@ -146,6 +147,34 @@
                     break;
                 case 'op':
                     echo '<h2 class="mb-4 d-inline-block pe-2">LISTA DE OPs</h2>';
+                    
+                    $sum_costo_total = $db->query("SELECT SUM(costo_total) AS total_costo_total FROM op")->getRow()->total_costo_total;
+                    $sum_presupuesto_restante = $db->query("
+                        SELECT 
+                        SUM(costo_total) - 
+                        (COALESCE((SELECT SUM(total) FROM op_gastos_indirectos), 0) + 
+                        COALESCE((SELECT SUM(total) FROM op_mano_obra), 0) +
+                        COALESCE((SELECT SUM(total) FROM op_materiales), 0)) AS total_presupuesto_restante
+                        FROM op")->getRow()->total_presupuesto_restante;
+                    $sum_gasto_actual = $db->query("
+                        SELECT 
+                        COALESCE((SELECT SUM(total) FROM op_gastos_indirectos), 0) + 
+                        COALESCE((SELECT SUM(total) FROM op_mano_obra), 0) +
+                        COALESCE((SELECT SUM(total) FROM op_materiales), 0) AS total_gasto_actual
+                        FROM op")->getRow()->total_gasto_actual;
+                    $sum_abonado = $db->query("SELECT SUM(abonado) AS total_abonado FROM op")->getRow()->total_abonado;
+                    $sum_materiales = $db->query("SELECT SUM(total) AS total_materiales FROM op_materiales")->getRow()->total_materiales;
+                    $sum_mano_obra = $db->query("SELECT SUM(total) AS total_mano_obra FROM op_mano_obra")->getRow()->total_mano_obra;
+                    $sum_gastos_indirectos = $db->query("SELECT SUM(total) AS total_gastos_indirectos FROM op_gastos_indirectos")->getRow()->total_gastos_indirectos;
+                    
+                    echo '<p class="mb-2"><b>SUMA COSTO TOTAL (S/.):</b> ' . ($sum_costo_total !== null ? number_format($sum_costo_total, 2, '.', ',') : "No Data") . '</p>';
+                    echo '<p class="mb-2"><b>SUMA PRESUPUESTO RESTANTE (S/.):</b> ' . ($sum_presupuesto_restante !== null ? number_format($sum_presupuesto_restante, 2, '.', ',') : "No Data") . '</p>';
+                    echo '<p class="mb-2"><b>SUMA GASTO ACTUAL (S/.):</b> ' . ($sum_gasto_actual !== null ? number_format($sum_gasto_actual, 2, '.', ',') : "No Data") . '</p>';
+                    echo '<p class="mb-2"><b>SUMA ABONADOS (S/.):</b> ' . ($sum_abonado !== null ? number_format($sum_abonado, 2, '.', ',') : "No Data") . '</p>';
+                    echo '<p class="mb-2"><b>SUMA MATERIALES (S/.):</b> ' . ($sum_materiales !== null ? number_format($sum_materiales, 2, '.', ',') : "No Data") . '</p>';
+                    echo '<p class="mb-2"><b>SUMA MANO DE OBRA (S/.):</b> ' . ($sum_mano_obra !== null ? number_format($sum_mano_obra, 2, '.', ',') : "No Data") . '</p>';
+                    echo '<p class="mb-2"><b>SUMA GASTOS INDIRECTOS (S/.):</b> ' . ($sum_gastos_indirectos !== null ? number_format($sum_gastos_indirectos, 2, '.', ',') : "No Data") . '</p>';
+
                     echo $output;
                     break;
                 case 'users':
