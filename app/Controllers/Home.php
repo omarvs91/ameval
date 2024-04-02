@@ -101,7 +101,7 @@ class Home extends BaseController
 
         $crud->addFields(['cliente_id', 'tipo', 'tipo_comprobante', 'descripcion', 'estado_pago', 'costo_total', 'abonado', 'observacion']);
 
-        $crud->editFields(['descripcion', 'fecha_inicio', 'fecha_entrega', 'observacion']);
+        $crud->editFields(['descripcion', 'fecha_inicio', 'fecha_entrega', 'abonado', 'costo_total', 'observacion']);
 
         $crud->displayAs([
             'cod_op' => 'OP',
@@ -115,7 +115,7 @@ class Home extends BaseController
             'registered_by_user_id' => 'REGISTRADO POR',
             'last_updated_by_user_id' => 'ÚLTIMA ACTUALIZACIÓN POR',
             'costo_total' => 'COSTO TOTAL (S/.)',
-            'abonado' => 'ABONADO (S/.)',
+            'abonado' => 'ABONADO HASTA EL MOMENTO (S/.)',
             'tipo' => 'SERVICIO / FABRICACION',
             'estado_pago' => 'ESTADO DE PAGO',
             'fecha_inicio' => 'FECHA DE INICIO',
