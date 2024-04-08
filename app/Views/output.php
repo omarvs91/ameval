@@ -40,7 +40,8 @@
                             CONSULTAR / EDITAR
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="consultarDropdown">
-                            <li><a class="dropdown-item" href="<?= base_url() ?>op">TODAS LAS OP</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>op">TODAS LAS OP ACTIVAS</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url() ?>op_culminadas">OPs CULMINADAS</a></li>
                             <li><a class="dropdown-item" href="<?= base_url() ?>clientes">CLIENTES</a></li>
 
                             <li><a class="dropdown-item" href="<?= base_url() ?>empleados">EMPLEADOS</a></li>

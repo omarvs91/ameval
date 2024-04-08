@@ -116,6 +116,11 @@ $routes->get('op/(:any)', 'Home::op/$1');
 $routes->post('op', 'Home::op');
 $routes->post('op/(:any)', 'Home::op');
 
+$routes->get('op_culminadas', 'Home::op');
+$routes->get('op_culminadas/(:any)', 'Home::op/$1');
+$routes->post('op_culminadas', 'Home::op');
+$routes->post('op_culminadas/(:any)', 'Home::op');
+
 $routes->get('estados', 'Home::estados');
 $routes->get('estados/(:any)', 'Home::estados/$1');
 $routes->post('estados', 'Home::estados');

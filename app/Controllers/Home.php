@@ -66,7 +66,24 @@ class Home extends BaseController
 
         $crud->setRelation('last_updated_by_user_id', 'users', 'username');
 
+        $crud->setRelation('estado_op_id', 'op_estados', 'nom_estado_op', null,'id');
+
         $crud->unsetSearchColumns(['abonado','costo_total','presupuesto_restante','gasto_actual','total_materiales','total_mano_obra','total_gastos_indirectos']);
+
+        // Where close based on menu items
+        $uri = service('uri');
+        $segment = $uri->getSegment(1); // get the first segment of the URL
+
+        switch ($segment) {
+            case 'op_culminadas':
+                // code to execute if the URL contains 'op_culminadas'
+                $crud->where("op.estado_op_id IN (3, 4)");
+                break;
+            default:
+                // code to execute if the URL doesn't contain any of the above segments
+                $crud->where("(op.estado_op_id IS NULL OR op.estado_op_id = '' OR op.estado_op_id IN (1, 2))");
+                break;
+        }
 
         $crud->fieldType('tipo_comprobante', 'dropdown_search', [
             "B" => "BOLETA",
@@ -88,6 +105,7 @@ class Home extends BaseController
             'cod_op',
             'fecha_creacion',
             'cliente_id',
+            'estado_op_id',
             'abonado',
             'costo_total',
             'presupuesto_restante',
@@ -99,9 +117,9 @@ class Home extends BaseController
 
         $crud->readFields(['cod_op', 'fecha_creacion', 'cliente_id', 'descripcion', 'abonado', 'costo_total', 'registered_by_user_id', 'last_updated_by_user_id', 'fecha_creacion', 'fecha_actualizacion', 'observacion']);
 
-        $crud->addFields(['cliente_id', 'tipo', 'tipo_comprobante', 'descripcion', 'estado_pago', 'costo_total', 'abonado', 'observacion']);
+        $crud->addFields(['cliente_id', 'tipo', 'tipo_comprobante', 'descripcion', 'estado_pago', 'estado_op_id', 'costo_total', 'abonado', 'observacion']);
 
-        $crud->editFields(['descripcion', 'fecha_inicio', 'fecha_entrega', 'abonado', 'costo_total', 'observacion']);
+        $crud->editFields(['descripcion', 'fecha_inicio', 'fecha_entrega', 'estado_op_id', 'abonado', 'costo_total', 'observacion']);
 
         $crud->displayAs([
             'cod_op' => 'OP',
@@ -124,7 +142,8 @@ class Home extends BaseController
             'total_materiales' => 'MATERIALES',
             'total_mano_obra' => 'MANO DE OBRA',
             'total_gastos_indirectos' => 'GASTOS INDIRECTOS',
-            'gasto_actual' => 'GASTO ACTUAL'
+            'gasto_actual' => 'GASTO ACTUAL',
+            'estado_op_id' => 'ESTADO DE LA OP'
         ]);
 
         $crud->mapColumn('presupuesto_restante', 'id');
