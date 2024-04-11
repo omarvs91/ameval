@@ -157,12 +157,15 @@
                         COALESCE((SELECT SUM(total) FROM op_mano_obra), 0) +
                         COALESCE((SELECT SUM(total) FROM op_materiales), 0)) AS total_presupuesto_restante
                         FROM op")->getRow()->total_presupuesto_restante;
-                    $sum_gasto_actual = $db->query("
-                        SELECT 
-                        COALESCE((SELECT SUM(total) FROM op_gastos_indirectos), 0) + 
-                        COALESCE((SELECT SUM(total) FROM op_mano_obra), 0) +
-                        COALESCE((SELECT SUM(total) FROM op_materiales), 0) AS total_gasto_actual
-                        FROM op")->getRow()->total_gasto_actual;
+                    $sum_gasto_actual_query = $db->query("SELECT COALESCE((SELECT SUM(total) FROM op_gastos_indirectos), 0) + COALESCE((SELECT SUM(total) FROM op_mano_obra), 0) + COALESCE((SELECT SUM(total) FROM op_materiales), 0) AS total_gasto_actual FROM op");
+
+                    if ($sum_gasto_actual_query->resultID->num_rows > 0) {
+                        $row = $sum_gasto_actual_query->getRow();
+                        $sum_gasto_actual = $row->total_gasto_actual;
+                    } else {
+                        // Handle the case when no rows are returned
+                        $sum_gasto_actual = 0; // Or any other desired value
+                    }
                     $sum_abonado = $db->query("SELECT SUM(abonado) AS total_abonado FROM op")->getRow()->total_abonado;
                     $sum_materiales = $db->query("SELECT SUM(total) AS total_materiales FROM op_materiales")->getRow()->total_materiales;
                     $sum_mano_obra = $db->query("SELECT SUM(total) AS total_mano_obra FROM op_mano_obra")->getRow()->total_mano_obra;
