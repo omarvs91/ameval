@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-include(APPPATH . 'Libraries/GroceryCrudEnterprise/autoload.php');
+include (APPPATH . 'Libraries/GroceryCrudEnterprise/autoload.php');
 use GroceryCrud\Core\GroceryCrud;
 
 class Home extends BaseController
@@ -66,9 +66,9 @@ class Home extends BaseController
 
         $crud->setRelation('last_updated_by_user_id', 'users', 'username');
 
-        $crud->setRelation('estado_op_id', 'op_estados', 'nom_estado_op', null,'id');
+        $crud->setRelation('estado_op_id', 'op_estados', 'nom_estado_op', null, 'id');
 
-        $crud->unsetSearchColumns(['abonado','costo_total','presupuesto_restante','gasto_actual','total_materiales','total_mano_obra','total_gastos_indirectos']);
+        $crud->unsetSearchColumns(['abonado', 'costo_total', 'presupuesto_restante', 'gasto_actual', 'total_materiales', 'total_mano_obra', 'total_gastos_indirectos']);
 
         // Where close based on menu items
         $uri = service('uri');
@@ -189,7 +189,7 @@ class Home extends BaseController
                 ",
                 [$value, $value, $value]
             )->getRowArray()['total_sum'] ?? 0;
-            
+
             return number_format($sumQuery, 2, '.', ',');
         });
 
@@ -252,11 +252,11 @@ class Home extends BaseController
 
             // If this tipo_comprobante is not in the comprobante_counter table yet, initialize it
             if ($comprobanteCounter === null) {
-                $comprobanteCounterModel->insert(['tipo_comprobante' => $tipo_comprobante, 'last_value' => 1]);
+                $comprobanteCounterModel->insert((object) ['tipo_comprobante' => $tipo_comprobante, 'last_value' => 1]);
                 $last_value = 1;
             } else {
                 $last_value = $comprobanteCounter['last_value'] + 1;
-                $comprobanteCounterModel->update($tipo_comprobante, ['last_value' => $last_value]);
+                $comprobanteCounterModel->update($tipo_comprobante, (object) ['last_value' => $last_value]);
             }
 
             // Generate the cod_comprobante
@@ -276,13 +276,12 @@ class Home extends BaseController
             $opModel = new \App\Models\Op();
 
             // Update the op record
-            $opModel->update($id, [
+            $opModel->update($id, (object) [
                 'cod_comprobante' => $cod_comprobante,
                 'cod_op' => $cod_op,
                 'registered_by_user_id' => session()->get('user_id'),
                 'last_updated_by_user_id' => session()->get('user_id')
             ]);
-
 
             return $stateParameters;
         });
@@ -293,6 +292,27 @@ class Home extends BaseController
         });
 
         $crud->setLangString('insert_success_message', 'SE REGISTRO OP');
+
+        $crud->unsetDeleteMultiple();
+
+        $crud->callbackAfterDelete(function ($stateParameters) use ($db) {
+            // Assuming $stateParameters->primaryKeyValue contains the ID to delete
+            $idToDelete = $stateParameters->primaryKeyValue;
+
+            // Prepare your delete queries
+            $queries = [
+                "DELETE FROM op_gastos_indirectos WHERE op_id = :id:",
+                "DELETE FROM op_mano_obra WHERE op_id = :id:",
+                "DELETE FROM op_materiales WHERE op_id = :id:"
+            ];
+
+            // Execute each delete query
+            foreach ($queries as $query) {
+                $db->query($query, ['id' => $idToDelete]);
+            }
+
+            return $stateParameters;
+        });
 
         // Render the CRUD
         $output = $crud->render();
